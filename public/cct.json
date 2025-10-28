@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "v1",
+  "metadata": {
+    "numero": "130/75",
+    "titulo": "Convenio Colectivo de Trabajo - Industria Metalúrgica",
+    "vigencia": {
+      "desde": "1975-01-01",
+      "hasta": "2025-12-31"
+    }
+  },
+  "capitulos": [
+    {
+      "numero": "I",
+      "titulo": "Disposiciones Generales",
+      "articulos": [
+        {
+          "numero": 1,
+          "titulo": "Ámbito de Aplicación",
+          "contenido": "El presente convenio colectivo de trabajo regirá las relaciones laborales entre los empleadores y trabajadores de la industria metalúrgica en todo el territorio nacional."
+        },
+        {
+          "numero": 2,
+          "titulo": "Partes Signatarias",
+          "contenido": "Son partes signatarias del presente convenio la Unión Obrera Metalúrgica de la República Argentina (UOM) y las cámaras empresarias del sector metalúrgico.",
+          "incisos": [
+            {
+              "identificador": "a",
+              "texto": "La representación sindical estará a cargo de la UOM y sus seccionales."
+            },
+            {
+              "identificador": "b",
+              "texto": "La representación empresarial estará a cargo de las cámaras adheridas."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "numero": "II",
+      "titulo": "Jornada de Trabajo",
+      "articulos": [
+        {
+          "numero": 3,
+          "titulo": "Duración de la Jornada",
+          "contenido": "La jornada normal de trabajo será de ocho (8) horas diarias o cuarenta y ocho (48) horas semanales, distribuidas de lunes a sábado."
+        },
+        {
+          "numero": 4,
+          "titulo": "Horas Extraordinarias",
+          "contenido": "Las horas trabajadas que excedan la jornada normal se considerarán extraordinarias y se abonarán con un recargo del cincuenta por ciento (50%) sobre el valor de la hora ordinaria."
+        }
+      ]
+    },
+    {
+      "numero": "III",
+      "titulo": "Remuneraciones",
+      "articulos": [
+        {
+          "numero": 5,
+          "titulo": "Salarios Básicos",
+          "contenido": "Los salarios básicos de las diferentes categorías profesionales serán los establecidos en las escalas salariales anexas al presente convenio, las cuales se actualizarán periódicamente conforme a las negociaciones paritarias."
+        },
+        {
+          "numero": 6,
+          "titulo": "Adicionales",
+          "contenido": "Los trabajadores percibirán los siguientes adicionales cuando corresponda:",
+          "incisos": [
+            {
+              "identificador": "a",
+              "texto": "Presentismo: equivalente al 10% del salario básico."
+            },
+            {
+              "identificador": "b",
+              "texto": "Antigüedad: 1% del salario básico por año de antigüedad."
+            },
+            {
+              "identificador": "c",
+              "texto": "Zona desfavorable: cuando el establecimiento esté ubicado en zonas consideradas desfavorables."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

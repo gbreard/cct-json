@@ -1,0 +1,428 @@
+{
+  "metadata": {
+    "nombre_archivo": "CON-ACU-130-2024-E_1",
+    "tipo_documento": "ACUERDO",
+    "numero_cct": null,
+    "fecha_parseo": "2025-10-22T11:27:32.876300",
+    "longitud_texto": 3217,
+    "version_tesauro": "4.249"
+  },
+  "estructura": {
+    "tipo": "ACUERDO",
+    "clausulas": [
+      {
+        "numero": 1,
+        "titulo": "Contenido completo",
+        "ordinal": "Único",
+        "contenido": "República Argentina\nPoder Ejecutivo Nacional\nAÑO DE LA DEFENSA DE LA VIDA, LA LIBERTAD Y LA PROPIEDAD\nDisposición\nNúmero: DI-2024-186-APN-DNL#MT\nCIUDAD DE BUENOS AIRES\nLunes 6 de Mayo de 2024\nReferencia: EX-2024-01834592- -APN-DGD#MT\nVISTO el Expediente EX-2024-01834592- -APN-DGD#MT,\nNo 14.250 (t.0. 2004), la\nNo 20.744 (t.0.1976) y\nmodificatorias; la Disposición DI-2024-206-APN-DNRYRT#MT, y\nCONSIDERANDO:\nlas páginas\ndel documento\nRE-2024-01834553-APN-DGD#MT\ndel presente expediente; obran las escalas\nsalariales que integran el acuerdo homologado por la Disposición citada en el Visto y registrado bajo el N' 241/24, celebrado por\nel SINDICATO DE MECANICOS Y AFINES DEL TRANSPORTE AUTOMOTOR DE LA REPUBLICA ARGENTINA y la empresa\nVOLKSWAGEN\nARGENTINA SOCIEDAD ANONIMA,\nmarco de los Convenios Colectivos de Trabajo de Empresa N'\n1640/21 \"E\ny N' 13/89\nE\", conforme lo dispuesto en la Ley de Negociación Colectiva N' 14.250 (t.0. 2004).\nQue en la referida Disposición también se dispuso evaluar la procedencia de establecer los promedios de las remuneraciones\npara, en caso de\ncorresponder; fijar los topes previstos en el segundo párrafo del Artículo 245 de la Ley N' 20.744 (t.o. 1976) y\nsus modificatorias.\nQue en cumplimiento de lo dispuesto se emitió en estas actuaciones el correspondiente informe técnico al cual se remite en\norden a la brevedad, donde se indican las constancias y se\nexplicitan los criterios adoptados para la determinación del promedio\nmensual de remuneraciones y del tope indemnizatorio resultante.\nQue la presente se dicta en orden a lo establecido en el segundo párrafo del Artículo 245 de la Ley de Contrato de Trabajo NP\n20.744 (t.o. 1976) y por delegación efectuada por Disposición DI-2021-288-APN-DNRYRT#MT , prorrogada por sus simIIares DI-\n2022-3730-APN-DNRYRT#MT,\nDI-2023-213-APN-DNRYRT#MT y\nDI-2024-107-APN-DNRYRT#MT,\nconforme\nResolución\nRESOL-2021-301-APN-MT.\nPor ello;\nEL DIRECTOR DE NORMATIVA LABORAL\nDISPONE:\nartículo 10.-\nFíjase el importe promedio de las remuneraciones del cual surge el tope indemnizatorio; según los términos del\nArtículo 245 de la\nde Contrato de Trabajo N' 20.744 (t.0. 1976) y sus modificatorias; derivado del acuerdo homologado por\nla Disposición DI-2024-206-APN-DNRYRT#MT y registrado bajo el NP 241/24, conforme a lo detallado en el archivo embebido\nque, como ANEXO Dl-2024-46340189-APN-DNL#MT forma parte integrante de la presente.\n\nartículo\nGírese\nDirección\nGestión\nDocumental\ndependiente\nSUBSECRETARIA\nGESTIÓN\nADMINISTRATIVA DE TRABAJO, EMPLEO Y SEGURIDAD SOCIAL para la intervención correspondiente. Cumplido ello; pase\nDirección\nNacional de\nRelaciones y\nRegulaciones del Trabajo\nfin de\nse registre\nel importe promedio de las\nremuneraciones fijado por este acto y del tope indemnizatorio resultante y proceda a la guarda correspondiente.\nartículo 30 .\nComuníquese, publíquese; dése a la Dirección Nacional del Registro Oficial y archívese.\nDigitally signed by FRANKENTHAL Pedro\nDate: 2024.05.06 15.01:10 ART\nLocation: Ciudad Autónoma de Buenos Aires\nPEDRO DIEGO FRANKENTHAL\nDirector\nDirección de Normativa Laboral\nSecretaría de Trabajo; Empleo y Seguridad Social\nDigitally signed by GESTION DOCUMENTAL\nELECTRONICA\nDate: 2024.05.06 15.01:12-03.00",
+        "longitud_caracteres": 3217,
+        "longitud_lineas": 80,
+        "incisos_detectados": [],
+        "num_incisos": 0,
+        "conceptos_detectados": [
+          {
+            "id": "C201",
+            "termino": "Disposición",
+            "frecuencia": 4,
+            "posiciones": [
+              102,
+              558,
+              957,
+              1703
+            ],
+            "confianza": 0.9,
+            "terminos_encontrados": [
+              "Disposición"
+            ]
+          },
+          {
+            "id": "C4896",
+            "termino": "Disposición DI-2024-206-APN-DNRYRT#MT",
+            "frecuencia": 2,
+            "posiciones": [
+              353,
+              2201
+            ],
+            "confianza": 0.7,
+            "terminos_encontrados": [
+              "Disposición DI-2024-206-APN-DNRYRT#MT"
+            ]
+          },
+          {
+            "id": "C4895",
+            "termino": "Promedio de las remuneraciones",
+            "frecuencia": 2,
+            "posiciones": [
+              1983,
+              2681
+            ],
+            "confianza": 0.7,
+            "terminos_encontrados": [
+              "Promedio de las remuneraciones"
+            ]
+          },
+          {
+            "id": "C5015",
+            "termino": "Tope indemnizatorio Resultante",
+            "frecuencia": 2,
+            "posiciones": [
+              1495,
+              2739
+            ],
+            "confianza": 0.7,
+            "terminos_encontrados": [
+              "Tope indemnizatorio Resultante"
+            ]
+          },
+          {
+            "id": "C4745",
+            "termino": "Acuerdo homologado",
+            "frecuencia": 2,
+            "posiciones": [
+              532,
+              2175
+            ],
+            "confianza": 0.7,
+            "terminos_encontrados": [
+              "Acuerdo homologado"
+            ]
+          },
+          {
+            "id": "C190",
+            "termino": "Expediente",
+            "frecuencia": 2,
+            "posiciones": [
+              243,
+              475
+            ],
+            "confianza": 0.7,
+            "terminos_encontrados": [
+              "Expediente"
+            ]
+          },
+          {
+            "id": "C2174",
+            "termino": "Director",
+            "frecuencia": 2,
+            "posiciones": [
+              1912,
+              3045
+            ],
+            "confianza": 0.7,
+            "terminos_encontrados": [
+              "Director"
+            ]
+          },
+          {
+            "id": "C2776",
+            "termino": "Operador Inicial",
+            "frecuencia": 5,
+            "posiciones": [
+              1340,
+              1561,
+              2280,
+              2780,
+              2853
+            ],
+            "confianza": 0.7,
+            "terminos_encontrados": [
+              "A"
+            ]
+          },
+          {
+            "id": "C3797",
+            "termino": "Operaciones y Aduana",
+            "frecuencia": 5,
+            "posiciones": [
+              1340,
+              1561,
+              2280,
+              2780,
+              2853
+            ],
+            "confianza": 0.7,
+            "terminos_encontrados": [
+              "A"
+            ]
+          },
+          {
+            "id": "C4570",
+            "termino": "SINDICATO DE MECANICOS Y AFINES DEL TRANSPORTE AUTOMOTOR",
+            "frecuencia": 2,
+            "posiciones": [
+              638,
+              638
+            ],
+            "confianza": 0.6,
+            "terminos_encontrados": [
+              "SINDICATO DE MECANICOS Y AFINES DEL TRANSPORTE AUTOMOTOR",
+              "Sindicato de Mecánicos y Afines del Transporte Automotor"
+            ]
+          },
+          {
+            "id": "C980",
+            "termino": "SECRETARIA DE TRABAJO",
+            "frecuencia": 2,
+            "posiciones": [
+              3085,
+              3085
+            ],
+            "confianza": 0.6,
+            "terminos_encontrados": [
+              "SECRETARIA DE TRABAJO",
+              "Secretaría de Trabajo"
+            ]
+          },
+          {
+            "id": "C1087",
+            "termino": "Empresa",
+            "frecuencia": 2,
+            "posiciones": [
+              726,
+              821
+            ],
+            "confianza": 0.6,
+            "terminos_encontrados": [
+              "Empresa"
+            ]
+          },
+          {
+            "id": "C032",
+            "termino": "Dirección Nacional de Relaciones y Regulaciones del Trabajo",
+            "frecuencia": 1,
+            "posiciones": [
+              2591
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Dirección Nacional de Relaciones y Regulaciones del Trabajo"
+            ]
+          },
+          {
+            "id": "C4299",
+            "termino": "Sindicato de Mecánicos y Afines del Transporte Automotor",
+            "frecuencia": 1,
+            "posiciones": [
+              638
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Sindicato de Mecánicos y Afines del Transporte Automotor"
+            ]
+          },
+          {
+            "id": "C400",
+            "termino": "Dirección Nacional del Registro Oficial",
+            "frecuencia": 1,
+            "posiciones": [
+              2858
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Dirección Nacional del Registro Oficial"
+            ]
+          },
+          {
+            "id": "C4571",
+            "termino": "VOLKSWAGEN ARGENTINA SOCIEDAD ANONIMA",
+            "frecuencia": 1,
+            "posiciones": [
+              734
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "VOLKSWAGEN ARGENTINA SOCIEDAD ANONIMA"
+            ]
+          },
+          {
+            "id": "C4657",
+            "termino": "Dirección de Normativa Laboral",
+            "frecuencia": 1,
+            "posiciones": [
+              3054
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Dirección de Normativa Laboral"
+            ]
+          },
+          {
+            "id": "C4663",
+            "termino": "Direccion de Normativa Laboral",
+            "frecuencia": 1,
+            "posiciones": [
+              3054
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Direccion de Normativa Laboral"
+            ]
+          },
+          {
+            "id": "C121",
+            "termino": "Ley de Negociación Colectiva",
+            "frecuencia": 1,
+            "posiciones": [
+              886
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Ley de Negociación Colectiva"
+            ]
+          },
+          {
+            "id": "C120",
+            "termino": "Ley de Contrato de Trabajo",
+            "frecuencia": 1,
+            "posiciones": [
+              1623
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Ley de Contrato de Trabajo"
+            ]
+          },
+          {
+            "id": "C031",
+            "termino": "Secretaría de Trabajo",
+            "frecuencia": 1,
+            "posiciones": [
+              3085
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Secretaría de Trabajo"
+            ]
+          },
+          {
+            "id": "C2490",
+            "termino": "Contrato de trabajo",
+            "frecuencia": 1,
+            "posiciones": [
+              2098
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Contrato de trabajo"
+            ]
+          },
+          {
+            "id": "C2121",
+            "termino": "Escalas Salariales",
+            "frecuencia": 1,
+            "posiciones": [
+              497
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Escalas Salariales"
+            ]
+          },
+          {
+            "id": "C4861",
+            "termino": "Remuneraciones básicas",
+            "frecuencia": 2,
+            "posiciones": [
+              1046,
+              1474
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "remuneraciones"
+            ]
+          },
+          {
+            "id": "C200",
+            "termino": "Resolución",
+            "frecuencia": 1,
+            "posiciones": [
+              1865
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Resolución"
+            ]
+          },
+          {
+            "id": "C778",
+            "termino": "Técnico",
+            "frecuencia": 1,
+            "posiciones": [
+              1305
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Técnico"
+            ]
+          },
+          {
+            "id": "C2391",
+            "termino": "Cooperativas Eléctricas",
+            "frecuencia": 2,
+            "posiciones": [
+              726,
+              821
+            ],
+            "confianza": 0.3,
+            "terminos_encontrados": [
+              "Empresa"
+            ]
+          },
+          {
+            "id": "C2504",
+            "termino": "Institución",
+            "frecuencia": 2,
+            "posiciones": [
+              726,
+              821
+            ],
+            "confianza": 0.3,
+            "terminos_encontrados": [
+              "Empresa"
+            ]
+          },
+          {
+            "id": "C4519",
+            "termino": "Empresa contratante",
+            "frecuencia": 2,
+            "posiciones": [
+              726,
+              821
+            ],
+            "confianza": 0.3,
+            "terminos_encontrados": [
+              "Empresa"
+            ]
+          },
+          {
+            "id": "C2780",
+            "termino": "Empleado Inicial",
+            "frecuencia": 2,
+            "posiciones": [
+              841,
+              854
+            ],
+            "confianza": 0.3,
+            "terminos_encontrados": [
+              "E"
+            ]
+          }
+        ],
+        "tablas_detectadas": []
+      }
+    ]
+  },
+  "validacion": {
+    "tipo_documento": "ACUERDO",
+    "nombre_archivo": "CON-ACU-130-2024-E_1",
+    "capitulos_validados": 0,
+    "articulos_validados": 0,
+    "total_conceptos_unicos": 0,
+    "conceptos_principales_documento": [],
+    "cobertura_tesauro": 0.0,
+    "advertencias_globales": [
+      "No se detectaron conceptos del tesauro en el documento"
+    ],
+    "clausulas_validadas": 1
+  }
+}

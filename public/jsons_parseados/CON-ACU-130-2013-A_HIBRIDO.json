@@ -1,0 +1,725 @@
+{
+  "metadata": {
+    "nombre_archivo": "CON-ACU-130-2013-A",
+    "tipo_documento": "ACUERDO",
+    "numero_cct": null,
+    "fecha_parseo": "2025-10-22T11:26:52.749475",
+    "longitud_texto": 5372,
+    "version_tesauro": "4.249"
+  },
+  "estructura": {
+    "tipo": "ACUERDO",
+    "clausulas": [
+      {
+        "numero": 1,
+        "titulo": "Cláusula Primera",
+        "ordinal": "Primera",
+        "contenido": "ACTA ACUERDQ\nEn la Ciudad Autónoma de Buenos Aires, siendo las 14:00 hs.\ndel día 15 de mayo\nde 2012,\npor la parte sindical la FEDERACIÓN MARITIMA, PORTUARIA\nY\nINDUSTRIA NAVAL DE LA REPÚBLICA ARGENTINA (FEMPINRA); con domicIIIo\nCombate\nCiudad\nAutónoma\nBuenos\nAires ,\nrepresentada por los Sres.\nJosé GIANCASPRO\nRoberto\nEduardo CORIA\nDaniel\nOsvaldo AMARANTE, Daniel Julio LEWICKI, Víctor Raúl HUERTA, Fabián DEL RIO,\nMERELES,\nCABRAL,\nCarlos\nESTECHE,\nLÓPEZ,\nLIZARRAGA,\nDaniel\nRUBINO ,\nMATTEO\nRicardo\nBOGLIANO;\npresencia de los Delegados de Personal Diego RODRIGUEZ, Fernando PERRONE,\nAlfredo\nZUNINO\nGastón\nGODOY,\nGastón\nNANNI,\nPANIAGUA,\nQUINTANA,\nCarlos BARÓN, Germán MONZÓN,\nFlavio LANZZIIOTTA; Mauro LA\nPIETTRA,\nÁngel GARCIA;\nHeber CÁCERES\ny Miguel VELAZQUEZ,\nasistencia letrada de los Dres.\nRosalía Isabel DE TEJERIA y Gregorio Jorge María\nPEREZ,\nla parte empresarial\nCÁMARA\nDEPÓSITOS\nFISCALES\nPRIVADOS (CADEFIP); con domicIIIo en Adolfo Alsina 495, piso 69, de esta Ciudad\nde Buenos Aires; representada por el Dr. Miguel C. PASCUCCI, Augusto Leonardo\nROSETTO, José WASSERMAN,\nElías CANIEVSKY y Alejandro Gabriel CIMMINO; y\nsuscriben el presente Acta Acuerdo'\n\nLas partes acuerdan dentro del marco legal del CCT 457/06 y las Actas\nAcuerdo Complementarias,\ninstrumentos todos homologados\nel Ministerio de\nTrabajo; Empleo y Seguridad Social; lo siguiente:",
+        "longitud_caracteres": 1352,
+        "longitud_lineas": 62,
+        "incisos_detectados": [],
+        "num_incisos": 0,
+        "conceptos_detectados": [
+          {
+            "id": "C002",
+            "termino": "Acuerdo",
+            "frecuencia": 2,
+            "posiciones": [
+              1145,
+              1229
+            ],
+            "confianza": 0.6,
+            "terminos_encontrados": [
+              "Acta acuerdo",
+              "Acuerdo"
+            ]
+          },
+          {
+            "id": "C023",
+            "termino": "Federación",
+            "frecuencia": 1,
+            "posiciones": [
+              126
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Federación"
+            ]
+          },
+          {
+            "id": "C4704",
+            "termino": "FEMPINRA",
+            "frecuencia": 1,
+            "posiciones": [
+              202
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "FEMPINRA"
+            ]
+          },
+          {
+            "id": "C4705",
+            "termino": "CADEFIP",
+            "frecuencia": 1,
+            "posiciones": [
+              903
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "CADEFIP"
+            ]
+          },
+          {
+            "id": "C894",
+            "termino": "Camara",
+            "frecuencia": 1,
+            "posiciones": [
+              867
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Camara"
+            ]
+          },
+          {
+            "id": "C370",
+            "termino": "Acta",
+            "frecuencia": 1,
+            "posiciones": [
+              0
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Acta"
+            ]
+          },
+          {
+            "id": "C3684",
+            "termino": "Cámara de Empresas de Mensajería por Moto y Afines",
+            "frecuencia": 2,
+            "posiciones": [
+              867,
+              867
+            ],
+            "confianza": 0.3,
+            "terminos_encontrados": [
+              "Cámara",
+              "Camara"
+            ]
+          }
+        ],
+        "tablas_detectadas": []
+      },
+      {
+        "numero": 2,
+        "titulo": "Cláusula Segunda",
+        "ordinal": "Segunda",
+        "contenido": "El presente acuerdo tiene vigencia desde 1 de junio de 2012 y operará\nsu vencimiento el día 31 de mayo de 2013.",
+        "longitud_caracteres": 111,
+        "longitud_lineas": 2,
+        "incisos_detectados": [],
+        "num_incisos": 0,
+        "conceptos_detectados": [
+          {
+            "id": "C012",
+            "termino": "Vigencia",
+            "frecuencia": 1,
+            "posiciones": [
+              26
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Vigencia"
+            ]
+          },
+          {
+            "id": "C002",
+            "termino": "Acuerdo",
+            "frecuencia": 1,
+            "posiciones": [
+              12
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Acuerdo"
+            ]
+          }
+        ],
+        "tablas_detectadas": []
+      },
+      {
+        "numero": 3,
+        "titulo": "Cláusula Tercera",
+        "ordinal": "Tercera",
+        "contenido": "Se pacta un incremento del 15 % de carácter remunerativo que se otorgará\npartir del 1/06/2012.\nEste incremento se aplicará sobre todos los conceptos que\nperciba mensualmente el trabajador al 31/05/2012",
+        "longitud_caracteres": 201,
+        "longitud_lineas": 4,
+        "incisos_detectados": [],
+        "num_incisos": 0,
+        "conceptos_detectados": [
+          {
+            "id": "C3994",
+            "termino": "Plus salarial por ascenso",
+            "frecuencia": 2,
+            "posiciones": [
+              12,
+              100
+            ],
+            "confianza": 0.3,
+            "terminos_encontrados": [
+              "Incremento"
+            ]
+          }
+        ],
+        "tablas_detectadas": []
+      },
+      {
+        "numero": 4,
+        "titulo": "Cláusula Cuarta",
+        "ordinal": "Cuarta",
+        "contenido": "Se pacta un incremento del 8 % de carácter remunerativo que se otorgará a\n1/10/2012.\nEste incremento se\naplicará sobre todos los conceptos que\nperciba mensualmente el trabajador al 31/05/2012",
+        "longitud_caracteres": 191,
+        "longitud_lineas": 5,
+        "incisos_detectados": [],
+        "num_incisos": 0,
+        "conceptos_detectados": [
+          {
+            "id": "C3994",
+            "termino": "Plus salarial por ascenso",
+            "frecuencia": 2,
+            "posiciones": [
+              12,
+              90
+            ],
+            "confianza": 0.3,
+            "terminos_encontrados": [
+              "Incremento"
+            ]
+          }
+        ],
+        "tablas_detectadas": []
+      },
+      {
+        "numero": 5,
+        "titulo": "Cláusula Quinta",
+        "ordinal": "Quinta",
+        "contenido": "Las partes acuerdan\nuna suma remunerativa que\nabonará\nen forma\nmensual e\nininterrumpidà a\ndel 01\nde enero de 2013 de $ 400,00.\nCUATROCIENTOS)\npartir\npartir\nIuuksl",
+        "longitud_caracteres": 162,
+        "longitud_lineas": 12,
+        "incisos_detectados": [],
+        "num_incisos": 0,
+        "conceptos_detectados": [
+          {
+            "id": "C4871",
+            "termino": "Suma Remunerativa",
+            "frecuencia": 1,
+            "posiciones": [
+              24
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Suma Remunerativa"
+            ]
+          }
+        ],
+        "tablas_detectadas": []
+      },
+      {
+        "numero": 6,
+        "titulo": "Cláusula Sexta",
+        "ordinal": "Sexta",
+        "contenido": "Podos los Yincrehentos y conceptos acordados en el presente no absorberán\ncompensarán ninguna suma cualquiera sea su concepto que esté percibiendo el\ntrabajador como por ejemplo la voz\nA cuenta de Futuros Aumentos'",
+        "longitud_caracteres": 214,
+        "longitud_lineas": 4,
+        "incisos_detectados": [],
+        "num_incisos": 0,
+        "conceptos_detectados": [],
+        "tablas_detectadas": []
+      },
+      {
+        "numero": 7,
+        "titulo": "Cláusula Séptima",
+        "ordinal": "Séptima",
+        "contenido": "Los trabajadores beneficiarios del presente acta acuerdo percibirán por\núnica vez;,\nuna GRATIFICACIÓN EXTRAORDINARIA\npor tanto\nde carácter\nremunerativo (art. 6 ley 24.241) de $ 1.500 (PESOS UN MII QUINIENTOS), la que\nserá abonada antes del 30 de enero de 2013.",
+        "longitud_caracteres": 260,
+        "longitud_lineas": 7,
+        "incisos_detectados": [],
+        "num_incisos": 0,
+        "conceptos_detectados": [
+          {
+            "id": "C2478",
+            "termino": "Gratificación extraordinaria",
+            "frecuencia": 1,
+            "posiciones": [
+              88
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Gratificación extraordinaria"
+            ]
+          }
+        ],
+        "tablas_detectadas": []
+      },
+      {
+        "numero": 8,
+        "titulo": "Cláusula Octava",
+        "ordinal": "Octava",
+        "contenido": "partes\nacuerdan\nmantener\ninalterable\nAcuerdo\nSalarial aquí\nformalizado; comprometiéndose el sector sindical a\nno realizar ninguna petición ~nI\nordinaria\nextraordinaria-\nincremento\nsalarial\n0\ncompensatorio de ninguna\nnaturaleza durante la vigencia del presente.",
+        "longitud_caracteres": 260,
+        "longitud_lineas": 15,
+        "incisos_detectados": [],
+        "num_incisos": 0,
+        "conceptos_detectados": [
+          {
+            "id": "C053",
+            "termino": "Incremento Salarial",
+            "frecuencia": 1,
+            "posiciones": [
+              169
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Incremento Salarial"
+            ]
+          },
+          {
+            "id": "C4924",
+            "termino": "Acuerdo Salarial",
+            "frecuencia": 1,
+            "posiciones": [
+              37
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Acuerdo Salarial"
+            ]
+          },
+          {
+            "id": "C012",
+            "termino": "Vigencia",
+            "frecuencia": 1,
+            "posiciones": [
+              238
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Vigencia"
+            ]
+          }
+        ],
+        "tablas_detectadas": []
+      },
+      {
+        "numero": 9,
+        "titulo": "Cláusula Novena",
+        "ordinal": "Novena",
+        "contenido": "Sin perjuicio\nlo expresado\ncláusula\nanterior,\ndeteriorarse en forma pronunciada la situación económica del país, las partes se\ncomprometen\nreunirse\nfin de analizar la situación de las empresas y\ntrabajadores.\nPARTE SINDICAL\nPARTE EMPRESARIA\n44\n\nSALARIOS 2012/2013\nSALARIO\nAumento 15%\nAumento 8%\nEnero 2013\n$400 A\nFEMPINRA-CADEFIP SUELDO\nBÁSICO Mayo\nSALARIO\nBÁSICO MENSUAL\n2012 + 8200\n0612012\n10/2012\nBÁSICO\nCapataz-Encargado_\n$ 5 973,15\n8 6.869,12\n8 7.346,97\n$ 7.746,97\nApuntador\n$ 5 155,45\n$ 5.928,77\n86.341,21\n86.741,21\nGuinchero Maquinista _\n$ 5.155,45\n$ 5.928,77\n86.341,21\n86.741,21\n[Guincheri de Spreader\n$ 5 564,12\n$ 6 398,73\n$ 6.843,86\n$ 7.243,86\nGuinchero de Contaneira\n$ 5 973,15\n$ 6 869,12\n$ 7.346,97\n$ 7.746,97\n[Guinchero Transtainer\n$ 6 518,34\n$ 7 496,09\n$ 8.017,56\n$ 8.417,56\nPeon Maestranza Cat. A\n$ 4.338,07\n$ 4.988,78\n$ 5 335,82\n$ 5.735,82\nPeon Maestranza Cat. B\n$ 4 338,07\n$ 4.988,78\n$ 5.335,82\n$ 5.735,82\nAdministrativo Cat. A\n$ 4 474,29\n$ 5 145,43\n$ 5 503,38\n$ 5.903,38\nAdministrativo Cat. B\n$ 4 610,53\n$ 5 302,11\n$ 5.670,95\n$ 6.070,95\nMantenimiento Cat. A\n$ 4.610,53\n$ 5.302,11\n$ 5.670,95\n$ 6 070,95\nMantenimiento Cat. B\n$ 4 882,97\n$ 5.615,42\n$ 6.006,C\n$ 6.406,06\nGRATIFICACIÓN EXTRAORDINARIA NO REMUNERATIVA DE $1500 (PESOS MII QUINIENFOS) PAGADERANTES DEL 301042013\nJu &aêt -\nQynn )\n06\n72)\n\n\"2012 - Año de Homenaje al doctor D\nMANUEL BELGRANO\nJlimnistevio de\n8mhleo % fequnidad _focial\n1.513.735/12\nExpediente\nEn la Ciudad Autónoma de Buenos Aires; a los veintisiete días del mes de julio\ndel año dos mII doce; siendo las 14.00\ncomparecen en el MINISTERIO DE\nTRABAJO,\nEMPLEO\nY\nSEGURIDAD SOCIAL,\nel Secretario\nConcIIIación\nDepartamento\nRelaciones\nLaborales\nGustavo\nORTOLANO,\nFEDERACION\nMARITIMA\nPORTUARIA\nINDUSTRIA\nREPUBLICA\nARGENTINA,\nSres .\nGIANCASPRO,\ncalidad\nde apoderado;\nsegún poder\nque adjunta;\nfacultades para negociar colectivamente;\nasistido por el\nGregorio Jorge\nMaría PEREZ; y por la CAMARA DE DEPOSITOS FISCALES PRIVADOS, los\nSres. Augusto ROSSETTO,\nElías CANIEVSKY y Alejandro Gabriel CIMMINO.\nDeclarado\nabierto\nfuncionario\nactuante;\nrepresentaciones presentes ratifican en todos sus términos el acuerdo al que\narribara\nen forma directa con la parte empresaria; mismo que acompaña en\nagregación\npresentes\nactuados,\nsolicitando\nhomologación; previo todo trámite de ley que correspondiere.\nCon lo que se cierra el acto siendo las 15.00 horas, labrándose la presente que\nleída;\nes firmada\nde conformidad\npara constancia\nel actuante\ncertifica.\nPARTE EMPRESARIA\nPARTE GREMIAL\nbv /9C\ngrabojo ,\n0phlano\n6/87Ad0",
+        "longitud_caracteres": 2538,
+        "longitud_lineas": 156,
+        "incisos_detectados": [],
+        "num_incisos": 0,
+        "conceptos_detectados": [
+          {
+            "id": "C051",
+            "termino": "Salario Básico",
+            "frecuencia": 3,
+            "posiciones": [
+              348,
+              329,
+              399
+            ],
+            "confianza": 0.7,
+            "terminos_encontrados": [
+              "Básico",
+              "Sueldo básico",
+              "Salario Básico"
+            ]
+          },
+          {
+            "id": "C3797",
+            "termino": "Operaciones y Aduana",
+            "frecuencia": 4,
+            "posiciones": [
+              310,
+              1469,
+              1170,
+              1345
+            ],
+            "confianza": 0.6,
+            "terminos_encontrados": [
+              "A",
+              "D",
+              "C"
+            ]
+          },
+          {
+            "id": "C030",
+            "termino": "Ministerio de Trabajo, Empleo y Seguridad Social",
+            "frecuencia": 1,
+            "posiciones": [
+              1565
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Ministerio de Trabajo, Empleo y Seguridad Social"
+            ]
+          },
+          {
+            "id": "C130",
+            "termino": "Gratificación Extraordinaria No Remunerativa",
+            "frecuencia": 1,
+            "posiciones": [
+              1183
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Gratificación Extraordinaria No Remunerativa"
+            ]
+          },
+          {
+            "id": "C3001",
+            "termino": "Cámara de Depósitos Fiscales Privados",
+            "frecuencia": 1,
+            "posiciones": [
+              1915
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Cámara de Depósitos Fiscales Privados"
+            ]
+          },
+          {
+            "id": "C4527",
+            "termino": "Guinchero de Contaneira",
+            "frecuencia": 1,
+            "posiciones": [
+              653
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Guinchero de Contaneira"
+            ]
+          },
+          {
+            "id": "C4529",
+            "termino": "Peon Maestranza Cat. A",
+            "frecuencia": 1,
+            "posiciones": [
+              788
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Peon Maestranza Cat. A"
+            ]
+          },
+          {
+            "id": "C4530",
+            "termino": "Peon Maestranza Cat. B",
+            "frecuencia": 1,
+            "posiciones": [
+              855
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Peon Maestranza Cat. B"
+            ]
+          },
+          {
+            "id": "C4526",
+            "termino": "Guincheri de Spreader",
+            "frecuencia": 1,
+            "posiciones": [
+              587
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Guincheri de Spreader"
+            ]
+          },
+          {
+            "id": "C4528",
+            "termino": "Guinchero Transtainer",
+            "frecuencia": 1,
+            "posiciones": [
+              722
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Guinchero Transtainer"
+            ]
+          },
+          {
+            "id": "C4531",
+            "termino": "Administrativo Cat. A",
+            "frecuencia": 1,
+            "posiciones": [
+              922
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Administrativo Cat. A"
+            ]
+          },
+          {
+            "id": "C4532",
+            "termino": "Administrativo Cat. B",
+            "frecuencia": 1,
+            "posiciones": [
+              988
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Administrativo Cat. B"
+            ]
+          },
+          {
+            "id": "C360",
+            "termino": "Funcionario Actuante",
+            "frecuencia": 1,
+            "posiciones": [
+              2045
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Funcionario Actuante"
+            ]
+          },
+          {
+            "id": "C4525",
+            "termino": "Guinchero Maquinista",
+            "frecuencia": 1,
+            "posiciones": [
+              521
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Guinchero Maquinista"
+            ]
+          },
+          {
+            "id": "C4702",
+            "termino": "Mantenimiento Cat. A",
+            "frecuencia": 1,
+            "posiciones": [
+              1054
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Mantenimiento Cat. A"
+            ]
+          },
+          {
+            "id": "C4703",
+            "termino": "Mantenimiento Cat. B",
+            "frecuencia": 1,
+            "posiciones": [
+              1119
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Mantenimiento Cat. B"
+            ]
+          },
+          {
+            "id": "C010",
+            "termino": "Homologación",
+            "frecuencia": 1,
+            "posiciones": [
+              2260
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Homologación"
+            ]
+          },
+          {
+            "id": "C430",
+            "termino": "Conformidad",
+            "frecuencia": 1,
+            "posiciones": [
+              2422
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Conformidad"
+            ]
+          },
+          {
+            "id": "C023",
+            "termino": "Federación",
+            "frecuencia": 1,
+            "posiciones": [
+              1694
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Federación"
+            ]
+          },
+          {
+            "id": "C190",
+            "termino": "Expediente",
+            "frecuencia": 1,
+            "posiciones": [
+              1419
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Expediente"
+            ]
+          },
+          {
+            "id": "C1125",
+            "termino": "Secretario",
+            "frecuencia": 1,
+            "posiciones": [
+              1618
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Secretario"
+            ]
+          },
+          {
+            "id": "C410",
+            "termino": "Apoderado",
+            "frecuencia": 1,
+            "posiciones": [
+              1785
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Apoderado"
+            ]
+          },
+          {
+            "id": "C2929",
+            "termino": "Apuntador",
+            "frecuencia": 1,
+            "posiciones": [
+              469
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Apuntador"
+            ]
+          },
+          {
+            "id": "C4704",
+            "termino": "FEMPINRA",
+            "frecuencia": 1,
+            "posiciones": [
+              312
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "FEMPINRA"
+            ]
+          },
+          {
+            "id": "C002",
+            "termino": "Acuerdo",
+            "frecuencia": 1,
+            "posiciones": [
+              2129
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Acuerdo"
+            ]
+          },
+          {
+            "id": "C050",
+            "termino": "Salario",
+            "frecuencia": 1,
+            "posiciones": [
+              263
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Salario"
+            ]
+          },
+          {
+            "id": "C536",
+            "termino": "Capataz",
+            "frecuencia": 1,
+            "posiciones": [
+              406
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Capataz"
+            ]
+          },
+          {
+            "id": "C4705",
+            "termino": "CADEFIP",
+            "frecuencia": 1,
+            "posiciones": [
+              321
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "CADEFIP"
+            ]
+          },
+          {
+            "id": "C4985",
+            "termino": "BASICO",
+            "frecuencia": 1,
+            "posiciones": [
+              399
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "BASICO"
+            ]
+          },
+          {
+            "id": "C2776",
+            "termino": "Operador Inicial",
+            "frecuencia": 2,
+            "posiciones": [
+              310,
+              1469
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "A"
+            ]
+          },
+          {
+            "id": "C053",
+            "termino": "Incremento Salarial",
+            "frecuencia": 2,
+            "posiciones": [
+              271,
+              283
+            ],
+            "confianza": 0.3,
+            "terminos_encontrados": [
+              "Aumento"
+            ]
+          }
+        ],
+        "tablas_detectadas": []
+      }
+    ]
+  },
+  "validacion": {
+    "tipo_documento": "ACUERDO",
+    "nombre_archivo": "CON-ACU-130-2013-A",
+    "capitulos_validados": 0,
+    "articulos_validados": 0,
+    "total_conceptos_unicos": 0,
+    "conceptos_principales_documento": [],
+    "cobertura_tesauro": 0.0,
+    "advertencias_globales": [
+      "No se detectaron conceptos del tesauro en el documento"
+    ],
+    "clausulas_validadas": 9
+  }
+}

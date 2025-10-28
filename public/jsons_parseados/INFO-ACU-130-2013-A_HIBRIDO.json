@@ -1,0 +1,289 @@
+{
+  "metadata": {
+    "nombre_archivo": "INFO-ACU-130-2013-A",
+    "tipo_documento": "INFORMACION",
+    "numero_cct": null,
+    "fecha_parseo": "2025-10-22T11:29:51.990480",
+    "longitud_texto": 1066,
+    "version_tesauro": "4.249"
+  },
+  "estructura": {
+    "tipo": "SIMPLE",
+    "preambulo": "",
+    "preambulo_tablas": [],
+    "articulos": [
+      {
+        "numero": 1,
+        "titulo": "Contenido completo",
+        "contenido": "SALARIOS 2012/2013\nSALARIO\nAumento 15%\nAumento 8%\nEnero 2013\n$400 A\nFEMPINRA-CADEFIP SUELDO\nBÁSICO Mayo\nSALARIO\nBÁSICO MENSUAL\n2012 + 8200\n0612012\n10/2012\nBÁSICO\nCapataz-Encargado_\n$ 5 973,15\n8 6.869,12\n8 7.346,97\n$ 7.746,97\nApuntador\n$ 5 155,45\n$ 5.928,77\n86.341,21\n86.741,21\nGuinchero Maquinista _\n$ 5.155,45\n$ 5.928,77\n86.341,21\n86.741,21\n[Guincheri de Spreader\n$ 5 564,12\n$ 6 398,73\n$ 6.843,86\n$ 7.243,86\nGuinchero de Contaneira\n$ 5 973,15\n$ 6 869,12\n$ 7.346,97\n$ 7.746,97\n[Guinchero Transtainer\n$ 6 518,34\n$ 7 496,09\n$ 8.017,56\n$ 8.417,56\nPeon Maestranza Cat. A\n$ 4.338,07\n$ 4.988,78\n$ 5 335,82\n$ 5.735,82\nPeon Maestranza Cat. B\n$ 4 338,07\n$ 4.988,78\n$ 5.335,82\n$ 5.735,82\nAdministrativo Cat. A\n$ 4 474,29\n$ 5 145,43\n$ 5 503,38\n$ 5.903,38\nAdministrativo Cat. B\n$ 4 610,53\n$ 5 302,11\n$ 5.670,95\n$ 6.070,95\nMantenimiento Cat. A\n$ 4.610,53\n$ 5.302,11\n$ 5.670,95\n$ 6 070,95\nMantenimiento Cat. B\n$ 4 882,97\n$ 5.615,42\n$ 6.006,C\n$ 6.406,06\nGRATIFICACIÓN EXTRAORDINARIA NO REMUNERATIVA DE $1500 (PESOS MIL QUINIENFOS) PAGADERANTES DEL 301042013\nJu &aêt -\nQynn )\n06\n72)",
+        "longitud_caracteres": 1066,
+        "longitud_lineas": 79,
+        "incisos_detectados": [],
+        "num_incisos": 0,
+        "conceptos_detectados": [
+          {
+            "id": "C051",
+            "termino": "Salario Básico",
+            "frecuencia": 3,
+            "posiciones": [
+              104,
+              85,
+              155
+            ],
+            "confianza": 0.7,
+            "terminos_encontrados": [
+              "Básico",
+              "Sueldo básico",
+              "Salario Básico"
+            ]
+          },
+          {
+            "id": "C130",
+            "termino": "Gratificación Extraordinaria No Remunerativa",
+            "frecuencia": 1,
+            "posiciones": [
+              939
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Gratificación Extraordinaria No Remunerativa"
+            ]
+          },
+          {
+            "id": "C4527",
+            "termino": "Guinchero de Contaneira",
+            "frecuencia": 1,
+            "posiciones": [
+              409
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Guinchero de Contaneira"
+            ]
+          },
+          {
+            "id": "C4529",
+            "termino": "Peon Maestranza Cat. A",
+            "frecuencia": 1,
+            "posiciones": [
+              544
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Peon Maestranza Cat. A"
+            ]
+          },
+          {
+            "id": "C4530",
+            "termino": "Peon Maestranza Cat. B",
+            "frecuencia": 1,
+            "posiciones": [
+              611
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Peon Maestranza Cat. B"
+            ]
+          },
+          {
+            "id": "C4526",
+            "termino": "Guincheri de Spreader",
+            "frecuencia": 1,
+            "posiciones": [
+              343
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Guincheri de Spreader"
+            ]
+          },
+          {
+            "id": "C4528",
+            "termino": "Guinchero Transtainer",
+            "frecuencia": 1,
+            "posiciones": [
+              478
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Guinchero Transtainer"
+            ]
+          },
+          {
+            "id": "C4531",
+            "termino": "Administrativo Cat. A",
+            "frecuencia": 1,
+            "posiciones": [
+              678
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Administrativo Cat. A"
+            ]
+          },
+          {
+            "id": "C4532",
+            "termino": "Administrativo Cat. B",
+            "frecuencia": 1,
+            "posiciones": [
+              744
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Administrativo Cat. B"
+            ]
+          },
+          {
+            "id": "C4525",
+            "termino": "Guinchero Maquinista",
+            "frecuencia": 1,
+            "posiciones": [
+              277
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Guinchero Maquinista"
+            ]
+          },
+          {
+            "id": "C4702",
+            "termino": "Mantenimiento Cat. A",
+            "frecuencia": 1,
+            "posiciones": [
+              810
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Mantenimiento Cat. A"
+            ]
+          },
+          {
+            "id": "C4703",
+            "termino": "Mantenimiento Cat. B",
+            "frecuencia": 1,
+            "posiciones": [
+              875
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Mantenimiento Cat. B"
+            ]
+          },
+          {
+            "id": "C2929",
+            "termino": "Apuntador",
+            "frecuencia": 1,
+            "posiciones": [
+              225
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Apuntador"
+            ]
+          },
+          {
+            "id": "C4704",
+            "termino": "FEMPINRA",
+            "frecuencia": 1,
+            "posiciones": [
+              68
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "FEMPINRA"
+            ]
+          },
+          {
+            "id": "C050",
+            "termino": "Salario",
+            "frecuencia": 1,
+            "posiciones": [
+              19
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Salario"
+            ]
+          },
+          {
+            "id": "C536",
+            "termino": "Capataz",
+            "frecuencia": 1,
+            "posiciones": [
+              162
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "Capataz"
+            ]
+          },
+          {
+            "id": "C4705",
+            "termino": "CADEFIP",
+            "frecuencia": 1,
+            "posiciones": [
+              77
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "CADEFIP"
+            ]
+          },
+          {
+            "id": "C4985",
+            "termino": "BASICO",
+            "frecuencia": 1,
+            "posiciones": [
+              155
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "BASICO"
+            ]
+          },
+          {
+            "id": "C3797",
+            "termino": "Operaciones y Aduana",
+            "frecuencia": 2,
+            "posiciones": [
+              66,
+              926
+            ],
+            "confianza": 0.4,
+            "terminos_encontrados": [
+              "A",
+              "C"
+            ]
+          },
+          {
+            "id": "C053",
+            "termino": "Incremento Salarial",
+            "frecuencia": 2,
+            "posiciones": [
+              27,
+              39
+            ],
+            "confianza": 0.3,
+            "terminos_encontrados": [
+              "Aumento"
+            ]
+          }
+        ],
+        "incisos_detallados": [],
+        "tablas_detectadas": []
+      }
+    ],
+    "anexo": "",
+    "anexo_tablas": []
+  },
+  "validacion": {
+    "tipo_documento": "INFORMACION",
+    "nombre_archivo": "INFO-ACU-130-2013-A",
+    "capitulos_validados": 0,
+    "articulos_validados": 1,
+    "total_conceptos_unicos": 20,
+    "conceptos_principales_documento": [],
+    "cobertura_tesauro": 0.0043,
+    "advertencias_globales": []
+  }
+}
