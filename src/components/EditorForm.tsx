@@ -1,4 +1,5 @@
 import { useDocStore } from "../state/useDocStore";
+import TableEditor, { type TableData } from "./TableEditor";
 
 export default function EditorForm() {
   const { doc, selected, updatePreambulo, updateCapitulo, updateArticulo, updateClausula, deleteCapitulo, deleteArticulo, deleteClausula, updateSeccionPersonalizada, deleteSeccionPersonalizada, updateAnexo, deleteAnexo } = useDocStore();
@@ -252,6 +253,40 @@ export default function EditorForm() {
           </div>
         </div>
 
+        {/* Checkbox para tabla */}
+        <div style={{ marginBottom: "20px" }}>
+          <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontSize: "14px" }}>
+            <input
+              type="checkbox"
+              checked={articulo.contiene_tabla || false}
+              onChange={(e) => {
+                const checked = e.target.checked;
+                updateArticulo(selected.capIndex!, selected.artIndex!, {
+                  contiene_tabla: checked,
+                  tabla_editable: checked ? (articulo.tabla_editable || { headers: ["Columna 1", "Columna 2"], rows: [["", ""]] }) : undefined
+                });
+              }}
+              style={{ width: "18px", height: "18px", cursor: "pointer" }}
+            />
+            <strong>Este artículo contiene una tabla</strong>
+          </label>
+          <div style={{ fontSize: "12px", color: "#666", marginTop: "5px", marginLeft: "26px" }}>
+            Marcá esto si el artículo incluye una tabla (escalas salariales, categorías, etc.)
+          </div>
+        </div>
+
+        {/* Editor de tabla si está marcado */}
+        {articulo.contiene_tabla && (
+          <div style={{ marginBottom: "20px" }}>
+            <TableEditor
+              value={articulo.tabla_editable}
+              onChange={(tabla: TableData) => {
+                updateArticulo(selected.capIndex!, selected.artIndex!, { tabla_editable: tabla });
+              }}
+            />
+          </div>
+        )}
+
         {/* Status selector */}
         <div style={{ marginBottom: "20px" }}>
           <label style={{ display: "block", fontWeight: "bold", marginBottom: "8px", fontSize: "14px" }}>
@@ -453,6 +488,40 @@ export default function EditorForm() {
           </div>
         </div>
 
+        {/* Checkbox para tabla */}
+        <div style={{ marginBottom: "20px" }}>
+          <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontSize: "14px" }}>
+            <input
+              type="checkbox"
+              checked={clausula.contiene_tabla || false}
+              onChange={(e) => {
+                const checked = e.target.checked;
+                updateClausula(selected.clausIndex!, {
+                  contiene_tabla: checked,
+                  tabla_editable: checked ? (clausula.tabla_editable || { headers: ["Columna 1", "Columna 2"], rows: [["", ""]] }) : undefined
+                });
+              }}
+              style={{ width: "18px", height: "18px", cursor: "pointer" }}
+            />
+            <strong>Esta cláusula contiene una tabla</strong>
+          </label>
+          <div style={{ fontSize: "12px", color: "#666", marginTop: "5px", marginLeft: "26px" }}>
+            Marcá esto si la cláusula incluye una tabla
+          </div>
+        </div>
+
+        {/* Editor de tabla si está marcado */}
+        {clausula.contiene_tabla && (
+          <div style={{ marginBottom: "20px" }}>
+            <TableEditor
+              value={clausula.tabla_editable}
+              onChange={(tabla: TableData) => {
+                updateClausula(selected.clausIndex!, { tabla_editable: tabla });
+              }}
+            />
+          </div>
+        )}
+
         {/* Conceptos detectados */}
         {clausula.conceptos_detectados && clausula.conceptos_detectados.length > 0 && (
           <div style={{ padding: "15px", background: "#e8f5e9", borderRadius: "5px", marginTop: "20px" }}>
@@ -611,6 +680,40 @@ export default function EditorForm() {
             {anexo.contenido.length} caracteres
           </div>
         </div>
+
+        {/* Checkbox para tabla */}
+        <div style={{ marginBottom: "20px" }}>
+          <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", fontSize: "14px" }}>
+            <input
+              type="checkbox"
+              checked={anexo.contiene_tabla || false}
+              onChange={(e) => {
+                const checked = e.target.checked;
+                updateAnexo(selected.anexoIndex!, {
+                  contiene_tabla: checked,
+                  tabla_editable: checked ? (anexo.tabla_editable || { headers: ["Columna 1", "Columna 2"], rows: [["", ""]] }) : undefined
+                });
+              }}
+              style={{ width: "18px", height: "18px", cursor: "pointer" }}
+            />
+            <strong>Este anexo contiene una tabla</strong>
+          </label>
+          <div style={{ fontSize: "12px", color: "#666", marginTop: "5px", marginLeft: "26px" }}>
+            Marcá esto si el anexo incluye una tabla (ideal para escalas salariales, tablas de categorías, etc.)
+          </div>
+        </div>
+
+        {/* Editor de tabla si está marcado */}
+        {anexo.contiene_tabla && (
+          <div style={{ marginBottom: "20px" }}>
+            <TableEditor
+              value={anexo.tabla_editable}
+              onChange={(tabla: TableData) => {
+                updateAnexo(selected.anexoIndex!, { tabla_editable: tabla });
+              }}
+            />
+          </div>
+        )}
 
         {/* Estado de revisión */}
         <div style={{ marginBottom: "20px" }}>

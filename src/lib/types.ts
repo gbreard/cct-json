@@ -22,6 +22,12 @@ export interface TablaDetectada {
   [key: string]: any; // Estructura flexible para tablas
 }
 
+// Estructura específica para tablas editables
+export interface TablaEditable {
+  headers: string[];
+  rows: string[][];
+}
+
 export interface IncisoDetectado {
   identificador: string;
   texto: string;
@@ -41,6 +47,8 @@ export interface Articulo {
   num_incisos: number;
   conceptos_detectados: ConceptoDetectado[];
   tablas_detectadas: TablaDetectada[];
+  contiene_tabla?: boolean; // Indica si el artículo contiene una tabla editable
+  tabla_editable?: TablaEditable; // Tabla estructurada editable en el editor
   status?: "OK" | "Corregir" | "Duda";
   notas_revision?: string; // Notas sobre errores de parseo o correcciones necesarias
   error_estructural?: string; // Descripción de error estructural (ej: "Falta tabla", "Debería ser cláusula")
@@ -67,6 +75,8 @@ export interface Clausula {
   num_incisos: number;
   conceptos_detectados: ConceptoDetectado[];
   tablas_detectadas: TablaDetectada[];
+  contiene_tabla?: boolean; // Indica si la cláusula contiene una tabla editable
+  tabla_editable?: TablaEditable; // Tabla estructurada editable en el editor
   status?: "OK" | "Corregir" | "Duda";
   notas_revision?: string;
   error_estructural?: string;
@@ -79,6 +89,8 @@ export interface Anexo {
   tipo?: string; // "TABLA" | "ESCALA_SALARIAL" | "DOCUMENTO" | "OTRO"
   longitud_caracteres?: number;
   tablas_detectadas: TablaDetectada[];
+  contiene_tabla?: boolean; // Indica si el anexo contiene una tabla editable
+  tabla_editable?: TablaEditable; // Tabla estructurada editable en el editor
   status?: "OK" | "Corregir" | "Duda";
   notas_revision?: string;
 }
