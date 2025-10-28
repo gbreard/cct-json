@@ -64,7 +64,7 @@ export default function EditorForm() {
           <div>
             <h3 style={{ margin: 0 }}>Editar Capítulo {capitulo.numero_romano || capitulo.numero}</h3>
             <div style={{ fontSize: "13px", color: "#666", marginTop: "5px" }}>
-              {capitulo.articulos.length} artículos en este capítulo
+              {capitulo.articulos?.length || 0} artículos en este capítulo
             </div>
           </div>
           <button
@@ -148,7 +148,7 @@ export default function EditorForm() {
         <div style={{ padding: "15px", background: "#f5f5f5", borderRadius: "5px", marginTop: "30px" }}>
           <strong style={{ fontSize: "14px" }}>📊 Resumen:</strong>
           <div style={{ fontSize: "13px", marginTop: "8px", color: "#666" }}>
-            • Artículos: {capitulo.articulos.length}
+            • Artículos: {capitulo.articulos?.length || 0}
           </div>
         </div>
       </div>
@@ -234,7 +234,7 @@ export default function EditorForm() {
             Contenido:
           </label>
           <textarea
-            value={articulo.contenido}
+            value={articulo.contenido || ""}
             onChange={(e) => updateArticulo(selected.capIndex!, selected.artIndex!, { contenido: e.target.value })}
             style={{
               width: "100%",
@@ -249,7 +249,7 @@ export default function EditorForm() {
             }}
           />
           <div style={{ fontSize: "12px", color: "#999", marginTop: "5px" }}>
-            {articulo.contenido.length} caracteres
+            {articulo.contenido?.length || 0} caracteres
           </div>
         </div>
 
@@ -465,7 +465,7 @@ export default function EditorForm() {
             Contenido:
           </label>
           <textarea
-            value={clausula.contenido}
+            value={clausula.contenido || ""}
             onChange={(e) => updateClausula(selected.clausIndex!, {
               contenido: e.target.value,
               longitud_caracteres: e.target.value.length,
@@ -484,7 +484,7 @@ export default function EditorForm() {
             }}
           />
           <div style={{ fontSize: "12px", color: "#999", marginTop: "5px" }}>
-            {clausula.contenido.length} caracteres / {clausula.contenido.split('\n').length} líneas
+            {clausula.contenido?.length || 0} caracteres / {clausula.contenido?.split('\n').length || 0} líneas
           </div>
         </div>
 
@@ -659,7 +659,7 @@ export default function EditorForm() {
             Contenido:
           </label>
           <textarea
-            value={anexo.contenido}
+            value={anexo.contenido || ""}
             onChange={(e) => updateAnexo(selected.anexoIndex!, {
               contenido: e.target.value,
               longitud_caracteres: e.target.value.length
@@ -677,7 +677,7 @@ export default function EditorForm() {
             }}
           />
           <div style={{ fontSize: "12px", color: "#999", marginTop: "5px" }}>
-            {anexo.contenido.length} caracteres
+            {anexo.contenido?.length || 0} caracteres
           </div>
         </div>
 
@@ -919,7 +919,7 @@ export default function EditorForm() {
             Contenido:
           </label>
           <textarea
-            value={seccion.contenido}
+            value={seccion.contenido || ""}
             onChange={(e) => updateSeccionPersonalizada(selected.seccionIndex!, { contenido: e.target.value })}
             style={{
               width: "100%",
@@ -934,7 +934,7 @@ export default function EditorForm() {
             }}
           />
           <div style={{ fontSize: "12px", color: "#999", marginTop: "5px" }}>
-            {seccion.contenido.length} caracteres
+            {seccion.contenido?.length || 0} caracteres
           </div>
         </div>
 
