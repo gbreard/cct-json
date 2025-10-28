@@ -1,7 +1,8 @@
-
+import { useState } from "react";
 import { useDocStore } from "../state/useDocStore";
 import { validateCapitulosUnicos, validateArticulosUnicos } from "../lib/validator";
 import SearchBar from "./SearchBar";
+import HelpModal from "./HelpModal";
 
 interface ToolbarProps {
   onSave: () => void;
@@ -11,6 +12,7 @@ interface ToolbarProps {
 
 export default function Toolbar({ onSave, lastSaved, isSaving }: ToolbarProps) {
   const { doc, setValidationErrors } = useDocStore();
+  const [showHelp, setShowHelp] = useState(false);
 
   const handleValidate = () => {
     if (!doc) return;
@@ -87,6 +89,22 @@ export default function Toolbar({ onSave, lastSaved, isSaving }: ToolbarProps) {
           💾 Guardar
         </button>
 
+        <button
+          onClick={() => setShowHelp(true)}
+          style={{
+            padding: "10px 20px",
+            background: "#ff9800",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+            fontWeight: "bold"
+          }}
+          title="Ver guía de uso"
+        >
+          ❓ Ayuda
+        </button>
+
         <div style={{ borderLeft: "1px solid #ddd", height: "30px", margin: "0 5px" }} />
 
         <SearchBar />
@@ -140,6 +158,8 @@ export default function Toolbar({ onSave, lastSaved, isSaving }: ToolbarProps) {
           )}
         </div>
       </div>
+
+      <HelpModal open={showHelp} onClose={() => setShowHelp(false)} />
     </div>
   );
 }

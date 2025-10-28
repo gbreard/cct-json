@@ -7,8 +7,9 @@ import Toolbar from "./components/Toolbar";
 import StatusFilterComponent from "./components/StatusFilter";
 import ProgressTracker from "./components/ProgressTracker";
 import DocumentSelector from "./components/DocumentSelector";
+import Resizer from "./components/Resizer";
 import { useDocStore } from "./state/useDocStore";
-import { useAutosave } from "./hooks/useAutosave";
+import { useAutosave, getAutosaveData, clearAutosave } from "./hooks/useAutosave";
 import "./App.css";
 
 function App() {
@@ -18,6 +19,10 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [pdfSearchText, setPdfSearchText] = useState<string | undefined>(undefined);
   const { lastSaved, isSaving } = useAutosave(30000); // Autosave cada 30 segundos
+
+  // Estados para anchos de paneles redimensionables
+  const [sidebarWidth, setSidebarWidth] = useState(300);
+  const [pdfWidth, setPdfWidth] = useState(400);
 
   // Efecto para extraer contenido del elemento seleccionado y buscarlo en el PDF
   useEffect(() => {
@@ -94,10 +99,37 @@ function App() {
         throw new Error("El documento no tiene la estructura esperada (falta metadata o estructura)");
       }
 
-      // Cargar el documento sin migraciones (estructura real)
+      // Revisar si hay autosave guardado
+      const fileName = json.metadata.nombre_archivo;
+      const autosaveData = getAutosaveData(fileName);
+
+      let documentToLoad = json;
+
+      if (autosaveData && autosaveData.timestamp) {
+        // Hay autosave guardado - preguntar al usuario
+        const savedDate = new Date(autosaveData.timestamp);
+        const timeAgo = Math.round((new Date().getTime() - savedDate.getTime()) / 60000); // minutos
+
+        const shouldRestore = confirm(
+          `📦 Hay cambios guardados automáticamente de este documento.\n\n` +
+          `Guardado hace ${timeAgo} minuto${timeAgo !== 1 ? 's' : ''}.\n\n` +
+          `¿Querés recuperar los cambios guardados?\n\n` +
+          `• SÍ: Cargar la versión con tus cambios\n` +
+          `• NO: Cargar la versión original (perderás los cambios)`
+        );
+
+        if (shouldRestore) {
+          console.log("Restaurando desde autosave...");
+          documentToLoad = autosaveData.data;
+        } else {
+          console.log("Usuario eligió NO restaurar autosave");
+        }
+      }
+
+      // Cargar el documento elegido
       console.log("Seteando documento en el store...");
-      setDoc(json);
-      setOriginal(JSON.parse(JSON.stringify(json)));
+      setDoc(documentToLoad);
+      setOriginal(JSON.parse(JSON.stringify(json))); // Original siempre es el del servidor
       setSelectedDocPath(filePath);
       console.log("Documento cargado exitosamente!");
     } catch (error) {
@@ -115,7 +147,11 @@ function App() {
   };
 
   const handleBackToSelector = () => {
-    if (confirm("¿Seguro que quieres volver al selector? Los cambios no guardados se perderán.")) {
+    const message = lastSaved
+      ? "¿Volver al selector?\n\nTus cambios están guardados automáticamente y podrás recuperarlos al volver a abrir este documento."
+      : "¿Volver al selector?\n\nNo se han guardado cambios automáticamente todavía.";
+
+    if (confirm(message)) {
       setDoc(null);
       setOriginal(null);
       setSelectedDocPath(null);
@@ -151,9 +187,13 @@ function App() {
 
     // Actualizar el original con el nuevo documento guardado
     setOriginal(JSON.parse(JSON.stringify(doc)));
+
+    // Limpiar el autosave ya que el usuario descargó el archivo
+    clearAutosave(nombreBase);
+
     setShowDiff(false);
 
-    alert(`✅ Documento guardado como: ${nombreArchivo}`);
+    alert(`✅ Documento guardado como: ${nombreArchivo}\n\nEl guardado automático se ha limpiado.`);
   };
 
   // Si no hay documento seleccionado, mostrar selector
@@ -212,7 +252,7 @@ function App() {
       )}
 
       <div className="app-layout">
-        <aside className="sidebar">
+        <aside className="sidebar" style={{ width: `${sidebarWidth}px` }}>
           <div style={{
             padding: "10px",
             borderBottom: "1px solid #ddd",
@@ -246,11 +286,15 @@ function App() {
           <ChapterTree />
         </aside>
 
+        <Resizer onResize={(deltaX) => setSidebarWidth(prev => Math.max(200, Math.min(600, prev + deltaX)))} />
+
         <main className="main-content">
           <EditorForm />
         </main>
 
-        <section className="pdf-viewer">
+        <Resizer onResize={(deltaX) => setPdfWidth(prev => Math.max(250, Math.min(800, prev - deltaX)))} />
+
+        <section className="pdf-viewer" style={{ width: `${pdfWidth}px` }}>
           <PDFViewer pdfPath={getPdfPath()} searchText={pdfSearchText} />
         </section>
       </div>

@@ -258,7 +258,15 @@ export default function PDFViewer({ pdfPath, searchText }: PDFViewerProps) {
         </div>
       </div>
 
-      <div style={{ flex: 1, overflow: "auto", display: "flex", justifyContent: "center", alignItems: "center", padding: "20px" }}>
+      <div style={{
+        flex: 1,
+        overflow: "auto",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        padding: "20px",
+        minHeight: 0  // Fix para permitir scroll correcto
+      }}>
         {!pdfPath || pdfError ? (
           <div style={{
             color: "white",
@@ -266,7 +274,8 @@ export default function PDFViewer({ pdfPath, searchText }: PDFViewerProps) {
             padding: "40px",
             background: "rgba(255,255,255,0.1)",
             borderRadius: "10px",
-            maxWidth: "400px"
+            maxWidth: "400px",
+            margin: "auto"
           }}>
             <div style={{ fontSize: "48px", marginBottom: "20px" }}>📄</div>
             <h3 style={{ margin: "0 0 15px 0", fontSize: "18px" }}>
@@ -282,28 +291,30 @@ export default function PDFViewer({ pdfPath, searchText }: PDFViewerProps) {
             </p>
           </div>
         ) : (
-          <Document
-            file={pdfPath}
-            onLoadSuccess={onDocumentLoadSuccess}
-            onLoadError={onDocumentLoadError}
-            loading={
-              <div style={{ color: "white", textAlign: "center", padding: "20px" }}>
-                Cargando PDF...
-              </div>
-            }
-          >
-            <Page
-              pageNumber={pageNumber}
-              renderTextLayer={true}
-              renderAnnotationLayer={false}
-              scale={scale}
+          <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+            <Document
+              file={pdfPath}
+              onLoadSuccess={onDocumentLoadSuccess}
+              onLoadError={onDocumentLoadError}
               loading={
                 <div style={{ color: "white", textAlign: "center", padding: "20px" }}>
-                  Cargando página...
+                  Cargando PDF...
                 </div>
               }
-            />
-          </Document>
+            >
+              <Page
+                pageNumber={pageNumber}
+                renderTextLayer={true}
+                renderAnnotationLayer={false}
+                scale={scale}
+                loading={
+                  <div style={{ color: "white", textAlign: "center", padding: "20px" }}>
+                    Cargando página...
+                  </div>
+                }
+              />
+            </Document>
+          </div>
         )}
       </div>
     </div>

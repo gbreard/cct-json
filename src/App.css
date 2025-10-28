@@ -27,24 +27,73 @@ body {
 }
 
 .app-layout {
-  display: grid;
-  grid-template-columns: 300px 1fr 400px;
+  display: flex;
   height: calc(100vh - 60px);
   overflow: hidden;
+  position: relative;
 }
 
 .sidebar {
-  border-right: 1px solid #ddd;
+  min-width: 200px;
+  max-width: 600px;
+  width: 300px;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .main-content {
-  border-right: 1px solid #ddd;
+  flex: 1;
+  min-width: 300px;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .pdf-viewer {
+  min-width: 250px;
+  max-width: 800px;
+  width: 400px;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Divisores redimensionables */
+.resizer {
+  width: 5px;
+  cursor: col-resize;
+  background: #ddd;
+  position: relative;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+
+.resizer:hover {
+  background: #2196f3;
+}
+
+.resizer:active {
+  background: #1976d2;
+}
+
+/* Indicador visual en el divisor */
+.resizer::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 3px;
+  height: 40px;
+  background: #999;
+  border-radius: 2px;
+  opacity: 0.5;
+}
+
+.resizer:hover::after {
+  opacity: 1;
+  background: white;
 }
 
 /* Estilos para React JSON Schema Form */
