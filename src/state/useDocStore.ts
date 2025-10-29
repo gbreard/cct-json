@@ -157,13 +157,16 @@ export const useDocStore = create<DocStore>((set, get) => ({
             });
           }
 
-          // Buscar en incisos
+          // Buscar en incisos (pueden ser strings u objetos)
           art.incisos_detectados.forEach((inciso, incIndex) => {
-            if (inciso.contenido?.toLowerCase().includes(term)) {
+            const isString = typeof inciso === 'string';
+            const texto = isString ? inciso : (inciso.contenido || inciso.texto || "");
+
+            if (texto && typeof texto === 'string' && texto.toLowerCase().includes(term)) {
               results.push({
                 type: 'inciso',
                 path: { type: 'inciso', capituloIndex: capIndex, articuloIndex: artIndex, incisoIndex: incIndex },
-                text: inciso.contenido,
+                text: texto,
                 matchText: searchTerm
               });
             }
