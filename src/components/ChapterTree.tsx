@@ -4,9 +4,10 @@ import type { Capitulo, Articulo, Clausula, Anexo, SeccionPersonalizada } from "
 import { highlightText } from "../lib/highlight";
 
 export default function ChapterTree() {
-  const { doc, selected, setSelected, addCapitulo, addArticulo, addClausula, addAnexo, addSeccionPersonalizada, searchTerm, statusFilter, reorderSeccionesPersonalizadas } = useDocStore();
+  const { doc, selected, setSelected, addCapitulo, addArticulo, addClausula, addAnexo, addSeccionPersonalizada, searchTerm, statusFilter, reorderSeccionesPersonalizadas, reorderCapitulos } = useDocStore();
   const [expandedChapters, setExpandedChapters] = useState<Set<number>>(new Set());
   const [draggedSeccionIndex, setDraggedSeccionIndex] = useState<number | null>(null);
+  const [draggedChapterIndex, setDraggedChapterIndex] = useState<number | null>(null);
   const [showHelp, setShowHelp] = useState(false);
 
   // Función para verificar si un elemento pasa el filtro de status
@@ -454,26 +455,54 @@ Ingresa 1, 2, 3 o 4:`;
         </div>
       )}
 
-      {/* Lista de Capítulos */}
+      {/* Lista de Capítulos - CON DRAG AND DROP */}
       {hasCapitulos && (
         <div>
           <div style={{ fontSize: "12px", fontWeight: "bold", color: "#666", marginBottom: "8px", textTransform: "uppercase" }}>
             Capítulos ({doc.estructura.capitulos!.length})
+            <span style={{ marginLeft: "8px", fontSize: "10px", color: "#999", fontWeight: "normal" }}>
+              (arrastra para reordenar)
+            </span>
           </div>
           <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
             {doc.estructura.capitulos!.map((cap, capIndex) => {
               const isExpanded = expandedChapters.has(capIndex);
               const isSelected = selected?.type === "capitulo" && selected.capIndex === capIndex && selected.artIndex === undefined;
+              const isDragging = draggedChapterIndex === capIndex;
 
               return (
-                <li key={capIndex} style={{ marginBottom: "10px" }}>
+                <li
+                  key={capIndex}
+                  style={{ marginBottom: "10px" }}
+                  draggable
+                  onDragStart={(e) => {
+                    setDraggedChapterIndex(capIndex);
+                    e.dataTransfer.effectAllowed = "move";
+                  }}
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = "move";
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    if (draggedChapterIndex !== null && draggedChapterIndex !== capIndex) {
+                      reorderCapitulos(draggedChapterIndex, capIndex);
+                    }
+                    setDraggedChapterIndex(null);
+                  }}
+                  onDragEnd={() => {
+                    setDraggedChapterIndex(null);
+                  }}
+                >
                   <div
                     style={{
-                      background: isSelected ? "#e3f2fd" : "white",
+                      background: isDragging ? "#e0e0e0" : (isSelected ? "#e3f2fd" : "white"),
                       padding: "10px",
                       borderRadius: "5px",
-                      cursor: "pointer",
-                      border: isSelected ? "2px solid #2196f3" : "1px solid #ddd"
+                      cursor: isDragging ? "grabbing" : "grab",
+                      border: isSelected ? "2px solid #2196f3" : (isDragging ? "2px dashed #999" : "1px solid #ddd"),
+                      opacity: isDragging ? 0.5 : 1,
+                      transition: "opacity 0.2s, background 0.2s"
                     }}
                   >
                     <div
@@ -483,6 +512,7 @@ Ingresa 1, 2, 3 o 4:`;
                       }}
                       style={{ display: "flex", alignItems: "center", gap: "8px" }}
                     >
+                      <span style={{ fontSize: "16px", cursor: "grab" }}>⋮⋮</span>
                       <span style={{ fontSize: "16px" }}>
                         {isExpanded ? "📖" : "📕"}
                       </span>
