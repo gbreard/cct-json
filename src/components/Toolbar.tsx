@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useDocStore } from "../state/useDocStore";
 import { validateCapitulosUnicos, validateArticulosUnicos } from "../lib/validator";
+import { getAutosaveData, clearAutosave } from "../hooks/useAutosave";
 import SearchBar from "./SearchBar";
 import HelpModal from "./HelpModal";
 
@@ -44,6 +45,61 @@ export default function Toolbar({ onSave, lastSaved, isSaving }: ToolbarProps) {
       alert("✅ Documento válido. No se encontraron errores.");
     } else {
       alert(`❌ Se encontraron ${errors.length} errores de validación. Revisa la lista abajo.`);
+    }
+  };
+
+  const handleDownloadBackup = () => {
+    if (!doc) return;
+
+    const autosaveData = getAutosaveData(doc.metadata.nombre_archivo);
+
+    if (!autosaveData) {
+      alert("❌ No hay respaldo local guardado todavía.\n\nEl guardado automático funciona cada 30 segundos.");
+      return;
+    }
+
+    const fecha = new Date().toISOString().slice(0, 19).replace(/:/g, "-");
+    const nombreBase = doc.metadata.nombre_archivo || "documento";
+    const nombreArchivo = `${nombreBase}_RESPALDO_${fecha}.json`;
+
+    // Descargar el JSON del respaldo
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(autosaveData.data, null, 2));
+    const downloadAnchor = document.createElement("a");
+    downloadAnchor.href = dataStr;
+    downloadAnchor.download = nombreArchivo;
+    downloadAnchor.click();
+
+    const savedDate = autosaveData.timestamp ? new Date(autosaveData.timestamp) : new Date();
+    const timeAgo = Math.round((new Date().getTime() - savedDate.getTime()) / 60000);
+
+    alert(
+      `✅ Respaldo local descargado\n\n` +
+      `Archivo: ${nombreArchivo}\n` +
+      `Guardado hace: ${timeAgo} minuto${timeAgo !== 1 ? 's' : ''}\n\n` +
+      `Este es el respaldo automático que se mantiene en tu navegador.`
+    );
+  };
+
+  const handleClearBackup = () => {
+    if (!doc) return;
+
+    const confirmClear = confirm(
+      `⚠️ ¿LIMPIAR RESPALDO AUTOMÁTICO?\n\n` +
+      `Esto eliminará el respaldo local guardado en el navegador.\n\n` +
+      `SOLO hacé esto si:\n` +
+      `• Ya descargaste el archivo final\n` +
+      `• Querés empezar desde cero con la versión original\n` +
+      `• Estás seguro de que no necesitás recuperar cambios\n\n` +
+      `¿Estás SEGURO de que querés limpiar el respaldo?`
+    );
+
+    if (confirmClear) {
+      clearAutosave(doc.metadata.nombre_archivo);
+      alert(
+        `✅ Respaldo local eliminado\n\n` +
+        `La próxima vez que cargues este documento, se abrirá la versión original del servidor.\n\n` +
+        `El guardado automático seguirá funcionando normalmente.`
+      );
     }
   };
 
@@ -103,6 +159,40 @@ export default function Toolbar({ onSave, lastSaved, isSaving }: ToolbarProps) {
           title="Ver guía de uso"
         >
           ❓ Ayuda
+        </button>
+
+        <div style={{ borderLeft: "1px solid #ddd", height: "30px", margin: "0 5px" }} />
+
+        <button
+          onClick={handleDownloadBackup}
+          style={{
+            padding: "10px 20px",
+            background: "#9c27b0",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+            fontWeight: "bold"
+          }}
+          title="Descargar respaldo del navegador"
+        >
+          📥 Respaldo Local
+        </button>
+
+        <button
+          onClick={handleClearBackup}
+          style={{
+            padding: "10px 20px",
+            background: "#f44336",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: "pointer",
+            fontWeight: "bold"
+          }}
+          title="Limpiar respaldo automático (usar con precaución)"
+        >
+          🗑️ Limpiar Respaldo
         </button>
 
         <div style={{ borderLeft: "1px solid #ddd", height: "30px", margin: "0 5px" }} />

@@ -560,7 +560,13 @@ export const useDocStore = create<DocStore>((set, get) => ({
     const newCapitulos = [...state.doc.estructura.capitulos];
     const newArticulos = [...newCapitulos[capIndex].articulos];
     const newIncisos = [...newArticulos[artIndex].incisos_detectados];
-    newIncisos[incIndex] = { ...newIncisos[incIndex], ...updates };
+
+    // Solo actualizar si el inciso es un objeto (no un string)
+    const currentInciso = newIncisos[incIndex];
+    if (typeof currentInciso !== 'string') {
+      newIncisos[incIndex] = { ...currentInciso, ...updates };
+    }
+
     newArticulos[artIndex] = { ...newArticulos[artIndex], incisos_detectados: newIncisos };
     newCapitulos[capIndex] = { ...newCapitulos[capIndex], articulos: newArticulos };
     return {

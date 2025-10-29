@@ -9,7 +9,7 @@ import ProgressTracker from "./components/ProgressTracker";
 import DocumentSelector from "./components/DocumentSelector";
 import Resizer from "./components/Resizer";
 import { useDocStore } from "./state/useDocStore";
-import { useAutosave, getAutosaveData, clearAutosave } from "./hooks/useAutosave";
+import { useAutosave, getAutosaveData } from "./hooks/useAutosave";
 import "./App.css";
 
 function App() {
@@ -99,31 +99,29 @@ function App() {
         throw new Error("El documento no tiene la estructura esperada (falta metadata o estructura)");
       }
 
-      // Revisar si hay autosave guardado
+      // Revisar si hay autosave guardado - SIEMPRE RESTAURAR AUTOMÁTICAMENTE
       const fileName = json.metadata.nombre_archivo;
       const autosaveData = getAutosaveData(fileName);
 
       let documentToLoad = json;
 
       if (autosaveData && autosaveData.timestamp) {
-        // Hay autosave guardado - preguntar al usuario
+        // Hay autosave guardado - restaurar automáticamente
         const savedDate = new Date(autosaveData.timestamp);
         const timeAgo = Math.round((new Date().getTime() - savedDate.getTime()) / 60000); // minutos
 
-        const shouldRestore = confirm(
-          `📦 Hay cambios guardados automáticamente de este documento.\n\n` +
-          `Guardado hace ${timeAgo} minuto${timeAgo !== 1 ? 's' : ''}.\n\n` +
-          `¿Querés recuperar los cambios guardados?\n\n` +
-          `• SÍ: Cargar la versión con tus cambios\n` +
-          `• NO: Cargar la versión original (perderás los cambios)`
-        );
+        console.log(`✅ Restaurando automáticamente cambios guardados hace ${timeAgo} minuto(s)`);
+        documentToLoad = autosaveData.data;
 
-        if (shouldRestore) {
-          console.log("Restaurando desde autosave...");
-          documentToLoad = autosaveData.data;
-        } else {
-          console.log("Usuario eligió NO restaurar autosave");
-        }
+        // Mostrar notificación al usuario
+        setTimeout(() => {
+          alert(
+            `✅ Cambios recuperados automáticamente\n\n` +
+            `Se restauraron tus cambios guardados hace ${timeAgo} minuto${timeAgo !== 1 ? 's' : ''}.\n\n` +
+            `El editor siempre continúa donde quedaste.\n` +
+            `Tus cambios están seguros y se guardan automáticamente cada 30 segundos.`
+          );
+        }, 500);
       }
 
       // Cargar el documento elegido
@@ -147,9 +145,24 @@ function App() {
   };
 
   const handleBackToSelector = () => {
-    const message = lastSaved
-      ? "¿Volver al selector?\n\nTus cambios están guardados automáticamente y podrás recuperarlos al volver a abrir este documento."
-      : "¿Volver al selector?\n\nNo se han guardado cambios automáticamente todavía.";
+    // Advertencia fuerte y clara sobre el estado del documento
+    let message = "⚠️ ¿VOLVER AL SELECTOR DE DOCUMENTOS?\n\n";
+
+    if (lastSaved) {
+      const minutosDesdeGuardado = Math.round((new Date().getTime() - lastSaved.getTime()) / 60000);
+      message +=
+        `✅ TUS CAMBIOS ESTÁN SEGUROS:\n` +
+        `• Último guardado automático: hace ${minutosDesdeGuardado} minuto${minutosDesdeGuardado !== 1 ? 's' : ''}\n` +
+        `• El respaldo se mantiene en el navegador\n` +
+        `• Al volver a abrir este documento, continuarás donde quedaste\n\n` +
+        `Recordá descargar el archivo final cuando termines de revisar todo el CCT.`;
+    } else {
+      message +=
+        `⚠️ ATENCIÓN: NO HAY CAMBIOS GUARDADOS TODAVÍA\n\n` +
+        `El guardado automático funciona cada 30 segundos.\n` +
+        `Si volvés ahora, perderás cualquier cambio reciente.\n\n` +
+        `¿Estás seguro de que querés salir?`;
+    }
 
     if (confirm(message)) {
       setDoc(null);
@@ -188,12 +201,18 @@ function App() {
     // Actualizar el original con el nuevo documento guardado
     setOriginal(JSON.parse(JSON.stringify(doc)));
 
-    // Limpiar el autosave ya que el usuario descargó el archivo
-    clearAutosave(nombreBase);
+    // NO limpiar el autosave - mantener respaldo permanente para seguridad
+    // El autosave se mantiene como respaldo adicional
 
     setShowDiff(false);
 
-    alert(`✅ Documento guardado como: ${nombreArchivo}\n\nEl guardado automático se ha limpiado.`);
+    alert(
+      `✅ Documento guardado como: ${nombreArchivo}\n\n` +
+      `Tu trabajo está seguro:\n` +
+      `• Archivo descargado a tu PC\n` +
+      `• Respaldo automático mantenido en el navegador\n` +
+      `• Guardado automático cada 30 segundos activo`
+    );
   };
 
   // Si no hay documento seleccionado, mostrar selector
