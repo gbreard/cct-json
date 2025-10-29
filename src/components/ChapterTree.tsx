@@ -35,34 +35,61 @@ export default function ChapterTree() {
   };
 
   const handleAddChapter = () => {
-    // Inicializar el array de capítulos si no existe
-    if (!doc.estructura.capitulos) {
-      doc.estructura.capitulos = [];
-    }
+    // Obtener capítulos existentes (puede ser undefined)
+    const capitulos = doc.estructura.capitulos || [];
 
-    const existing = doc.estructura.capitulos.map((c) => c.numero);
+    const existing = capitulos.map((c) => c.numero);
     const nextNumber = existing.length > 0 ? Math.max(...existing) + 1 : 1;
 
-    const numero = parseInt(window.prompt("Número del capítulo:", String(nextNumber)) || String(nextNumber));
+    const numeroInput = window.prompt("Número del capítulo:", String(nextNumber));
+
+    // Si el usuario cancela, no hacer nada
+    if (numeroInput === null) return;
+
+    const numero = parseInt(numeroInput);
+
+    // Validar que sea un número válido
+    if (isNaN(numero) || numero <= 0) {
+      alert("Por favor ingresá un número válido mayor a 0");
+      return;
+    }
+
     const titulo = window.prompt("Título del nuevo capítulo:", "Disposiciones especiales") || "Sin título";
 
     const newCapitulo: Capitulo = {
       numero,
       titulo,
-      articulos: []
+      articulos: [],
+      status: undefined,
+      notas_revision: undefined
     };
 
     addCapitulo(newCapitulo);
+
+    // Seleccionar el nuevo capítulo
+    setSelected({ type: "capitulo", capIndex: capitulos.length });
   };
 
   const handleAddArticulo = (capIndex: number) => {
     if (!doc.estructura.capitulos) return;
 
     const capitulo = doc.estructura.capitulos[capIndex];
-    const existingNumbers = capitulo.articulos.map(a => a.numero);
+    const existingNumbers = capitulo.articulos?.map(a => a.numero) || [];
     const nextNumber = existingNumbers.length > 0 ? Math.max(...existingNumbers) + 1 : 1;
 
-    const numero = parseInt(window.prompt("Número del artículo:", String(nextNumber)) || String(nextNumber));
+    const numeroInput = window.prompt("Número del artículo:", String(nextNumber));
+
+    // Si el usuario cancela, no hacer nada
+    if (numeroInput === null) return;
+
+    const numero = parseInt(numeroInput);
+
+    // Validar que sea un número válido
+    if (isNaN(numero) || numero <= 0) {
+      alert("Por favor ingresá un número válido mayor a 0");
+      return;
+    }
+
     const titulo = window.prompt("Título del artículo (opcional):") || "";
 
     const newArticulo: Articulo = {
@@ -72,26 +99,38 @@ export default function ChapterTree() {
       incisos_detectados: [],
       num_incisos: 0,
       conceptos_detectados: [],
-      tablas_detectadas: []
+      tablas_detectadas: [],
+      status: undefined,
+      notas_revision: undefined
     };
 
     addArticulo(capIndex, newArticulo);
 
     // Seleccionar automáticamente el nuevo artículo
-    const newArticuloIndex = capitulo.articulos.length; // El índice del nuevo artículo
+    const newArticuloIndex = capitulo.articulos?.length || 0; // El índice del nuevo artículo
     setSelected({ type: "articulo", capIndex, artIndex: newArticuloIndex });
   };
 
   const handleAddClausula = () => {
-    // Inicializar el array de cláusulas si no existe
-    if (!doc.estructura.clausulas) {
-      doc.estructura.clausulas = [];
-    }
+    // Obtener cláusulas existentes (puede ser undefined)
+    const clausulas = doc.estructura.clausulas || [];
 
-    const existing = doc.estructura.clausulas.map((c) => c.numero);
+    const existing = clausulas.map((c) => c.numero);
     const nextNumber = existing.length > 0 ? Math.max(...existing) + 1 : 1;
 
-    const numero = parseInt(window.prompt("Número de la cláusula:", String(nextNumber)) || String(nextNumber));
+    const numeroInput = window.prompt("Número de la cláusula:", String(nextNumber));
+
+    // Si el usuario cancela, no hacer nada
+    if (numeroInput === null) return;
+
+    const numero = parseInt(numeroInput);
+
+    // Validar que sea un número válido
+    if (isNaN(numero) || numero <= 0) {
+      alert("Por favor ingresá un número válido mayor a 0");
+      return;
+    }
+
     const titulo = window.prompt("Título de la cláusula:", "") || "";
 
     const newClausula: Clausula = {
@@ -103,13 +142,15 @@ export default function ChapterTree() {
       incisos_detectados: [],
       num_incisos: 0,
       conceptos_detectados: [],
-      tablas_detectadas: []
+      tablas_detectadas: [],
+      status: undefined,
+      notas_revision: undefined
     };
 
     addClausula(newClausula);
 
     // Seleccionar automáticamente la nueva cláusula
-    const newClausulaIndex = doc.estructura.clausulas.length; // El índice de la nueva cláusula
+    const newClausulaIndex = clausulas.length; // El índice de la nueva cláusula
     setSelected({ type: "clausula", clausIndex: newClausulaIndex });
   };
 
@@ -117,7 +158,19 @@ export default function ChapterTree() {
     const anexos = doc.estructura.anexos || [];
     const nextNumber = anexos.length > 0 ? Math.max(...anexos.map(a => a.numero)) + 1 : 1;
 
-    const numero = parseInt(window.prompt("Número del anexo:", String(nextNumber)) || String(nextNumber));
+    const numeroInput = window.prompt("Número del anexo:", String(nextNumber));
+
+    // Si el usuario cancela, no hacer nada
+    if (numeroInput === null) return;
+
+    const numero = parseInt(numeroInput);
+
+    // Validar que sea un número válido
+    if (isNaN(numero) || numero <= 0) {
+      alert("Por favor ingresá un número válido mayor a 0");
+      return;
+    }
+
     const titulo = window.prompt("Título del anexo:", "Anexo - Escala Salarial") || "";
     const tipo = window.prompt("Tipo de anexo (TABLA/ESCALA_SALARIAL/DOCUMENTO/OTRO):", "ESCALA_SALARIAL") || "OTRO";
 
@@ -127,7 +180,9 @@ export default function ChapterTree() {
       tipo,
       contenido: "", // Vacío - el usuario lo editará en el formulario
       longitud_caracteres: 0,
-      tablas_detectadas: []
+      tablas_detectadas: [],
+      status: undefined,
+      notas_revision: undefined
     };
 
     addAnexo(newAnexo);
