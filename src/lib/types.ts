@@ -43,10 +43,10 @@ export interface Articulo {
   contenido: string;
   longitud_caracteres?: number;
   longitud_lineas?: number;
-  incisos_detectados: IncisoDetectado[];
+  incisos_detectados: (IncisoDetectado | string)[]; // Puede ser array de objetos o strings
   num_incisos: number;
   conceptos_detectados: ConceptoDetectado[];
-  tablas_detectadas: TablaDetectada[];
+  tablas_detectadas?: TablaDetectada[]; // Opcional porque algunos JSONs no lo tienen
   contiene_tabla?: boolean; // Indica si el artículo contiene una tabla editable
   tabla_editable?: TablaEditable; // Tabla estructurada editable en el editor
   status?: "OK" | "Corregir" | "Duda";

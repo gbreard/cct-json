@@ -337,14 +337,25 @@ export default function EditorForm() {
           <div style={{ padding: "15px", background: "#fff3e0", borderRadius: "5px", marginTop: "20px" }}>
             <strong style={{ fontSize: "14px" }}>📋 Incisos Detectados ({articulo.incisos_detectados.length}):</strong>
             <div style={{ marginTop: "10px", maxHeight: "200px", overflow: "auto" }}>
-              {articulo.incisos_detectados.map((inciso, i) => (
-                <div key={i} style={{ padding: "8px", background: "white", marginBottom: "5px", borderRadius: "3px", fontSize: "13px" }}>
-                  <strong>{inciso.identificador}</strong>
-                  <div style={{ marginTop: "4px", color: "#666" }}>
-                    {inciso.texto.substring(0, 100)}{inciso.texto.length > 100 ? "..." : ""}
+              {articulo.incisos_detectados.map((inciso, i) => {
+                // Manejar incisos que son strings o objetos
+                const isString = typeof inciso === 'string';
+                const identificador = isString ? `Inciso ${i + 1}` : (inciso.identificador || `Inciso ${i + 1}`);
+                const texto = isString ? inciso : (inciso.texto || inciso.contenido || "");
+
+                return (
+                  <div key={i} style={{ padding: "8px", background: "white", marginBottom: "5px", borderRadius: "3px", fontSize: "13px" }}>
+                    <strong>{identificador}</strong>
+                    <div style={{ marginTop: "4px", color: "#666" }}>
+                      {texto && typeof texto === 'string' ? (
+                        <>{texto.substring(0, 100)}{texto.length > 100 ? "..." : ""}</>
+                      ) : (
+                        "(Sin contenido)"
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         )}
