@@ -13,7 +13,7 @@ interface ToolbarProps {
   lastCloudSync?: Date | null;
 }
 
-export default function Toolbar({ onSave, lastSaved, isSaving, syncStatus, lastCloudSync }: ToolbarProps) {
+export default function Toolbar({ onSave, lastSaved, syncStatus, lastCloudSync }: ToolbarProps) {
   const { doc, setValidationErrors } = useDocStore();
   const [showHelp, setShowHelp] = useState(false);
 

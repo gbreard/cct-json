@@ -18,7 +18,7 @@ function App() {
   const [selectedDocPath, setSelectedDocPath] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [pdfSearchText, setPdfSearchText] = useState<string | undefined>(undefined);
-  const { lastSaved, isSaving, syncStatus, lastCloudSync } = useAutosave(30000); // Autosave cada 30 segundos
+  const { lastSaved, syncStatus, lastCloudSync } = useAutosave(30000); // Autosave cada 30 segundos
 
   // Estados para anchos de paneles redimensionables
   const [sidebarWidth, setSidebarWidth] = useState(300);
@@ -111,8 +111,8 @@ function App() {
       // Comparar versiones
       if (localData && cloudData) {
         // Ambos existen - elegir el más reciente
-        const localTime = new Date(localData.timestamp).getTime();
-        const cloudTime = new Date(cloudData.timestamp).getTime();
+        const localTime = localData.timestamp ? new Date(localData.timestamp).getTime() : 0;
+        const cloudTime = cloudData.timestamp ? new Date(cloudData.timestamp).getTime() : 0;
 
         if (localTime > cloudTime) {
           // Local más reciente
@@ -140,7 +140,8 @@ function App() {
         // Solo existe en cloud
         documentToLoad = cloudData.data;
         source = 'cloud';
-        const timeAgo = Math.round((new Date().getTime() - new Date(cloudData.timestamp).getTime()) / 60000);
+        const cloudTime = cloudData.timestamp ? new Date(cloudData.timestamp).getTime() : new Date().getTime();
+        const timeAgo = Math.round((new Date().getTime() - cloudTime) / 60000);
         notificationMessage =
           `☁️ Cargada versión del SERVIDOR\n\n` +
           `Última edición: ${cloudData.userName || 'Usuario'}\n` +
@@ -151,7 +152,8 @@ function App() {
         // Solo existe local
         documentToLoad = localData.data;
         source = 'local';
-        const timeAgo = Math.round((new Date().getTime() - new Date(localData.timestamp).getTime()) / 60000);
+        const localTime = localData.timestamp ? new Date(localData.timestamp).getTime() : new Date().getTime();
+        const timeAgo = Math.round((new Date().getTime() - localTime) / 60000);
         notificationMessage =
           `✅ Cargada versión LOCAL\n\n` +
           `Guardada hace ${timeAgo} minuto${timeAgo !== 1 ? 's' : ''} en este navegador.\n\n` +
@@ -289,7 +291,6 @@ function App() {
       <Toolbar
         onSave={handleSave}
         lastSaved={lastSaved}
-        isSaving={isSaving}
         syncStatus={syncStatus}
         lastCloudSync={lastCloudSync}
       />
