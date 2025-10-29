@@ -1,19 +1,26 @@
 import { useState, useEffect } from "react";
-import type { DocumentInfo } from "../lib/types";
+import type { DocumentInfo, CCTDocument } from "../lib/types";
+import { getAutosaveData, getCloudAutosave } from "../hooks/useAutosave";
+import { calculateProgress, getEstadoLabel, getEstadoColor, type ProgressStats } from "../lib/progressCalculator";
 
 interface DocumentSelectorProps {
   onSelectDocument: (filePath: string) => void;
 }
 
+interface DocumentWithProgress extends DocumentInfo {
+  progress?: ProgressStats;
+  lastEdited?: Date | null;
+  editedBy?: string;
+}
+
 export default function DocumentSelector({ onSelectDocument }: DocumentSelectorProps) {
-  const [documents, setDocuments] = useState<DocumentInfo[]>([]);
+  const [documents, setDocuments] = useState<DocumentWithProgress[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [loadingProgress, setLoadingProgress] = useState(true);
 
   useEffect(() => {
     // Cargar la lista de documentos disponibles
-    // Por ahora, usamos una lista hardcodeada de los 18 documentos
-    // En producción, esto vendría de un endpoint que lista los archivos
     const availableDocs: DocumentInfo[] = [
       {
         fileName: "CCT-130-75-Principal_02_0CCADB83_HIBRIDO.json",
@@ -127,12 +134,99 @@ export default function DocumentSelector({ onSelectDocument }: DocumentSelectorP
 
     setDocuments(availableDocs);
     setLoading(false);
+
+    // Cargar progreso de cada documento en paralelo
+    loadAllProgress(availableDocs);
   }, []);
+
+  const loadAllProgress = async (docs: DocumentInfo[]) => {
+    setLoadingProgress(true);
+
+    const docsWithProgress = await Promise.all(
+      docs.map(async (doc) => {
+        try {
+          const baseFileName = doc.fileName.replace("_HIBRIDO.json", "");
+
+          // Intentar cargar desde local y cloud
+          const localData = getAutosaveData(baseFileName);
+          const cloudData = await getCloudAutosave(baseFileName);
+
+          // Elegir la versión más reciente
+          let documentData: CCTDocument | null = null;
+          let lastEdited: Date | null = null;
+          let editedBy: string | undefined = undefined;
+
+          if (localData && cloudData) {
+            const localTime = localData.timestamp ? new Date(localData.timestamp).getTime() : 0;
+            const cloudTime = cloudData.timestamp ? new Date(cloudData.timestamp).getTime() : 0;
+
+            if (localTime > cloudTime) {
+              documentData = localData.data;
+              lastEdited = localData.timestamp ? new Date(localData.timestamp) : null;
+            } else {
+              documentData = cloudData.data;
+              lastEdited = cloudData.timestamp ? new Date(cloudData.timestamp) : null;
+              editedBy = cloudData.userName;
+            }
+          } else if (cloudData) {
+            documentData = cloudData.data;
+            lastEdited = cloudData.timestamp ? new Date(cloudData.timestamp) : null;
+            editedBy = cloudData.userName;
+          } else if (localData) {
+            documentData = localData.data;
+            lastEdited = localData.timestamp ? new Date(localData.timestamp) : null;
+          }
+
+          // Calcular progreso si hay datos
+          const progress = documentData ? calculateProgress(documentData) : undefined;
+
+          return {
+            ...doc,
+            progress,
+            lastEdited,
+            editedBy
+          };
+        } catch (error) {
+          console.error(`Error loading progress for ${doc.fileName}:`, error);
+          return {
+            ...doc,
+            progress: undefined,
+            lastEdited: null,
+            editedBy: undefined
+          };
+        }
+      })
+    );
+
+    setDocuments(docsWithProgress);
+    setLoadingProgress(false);
+  };
 
   const filteredDocs = documents.filter((doc) =>
     doc.fileName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     doc.tipo_documento.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const renderProgressBar = (porcentaje: number) => {
+    const filled = Math.floor(porcentaje / 10);
+    const empty = 10 - filled;
+    return "█".repeat(filled) + "░".repeat(empty);
+  };
+
+  const formatTimeAgo = (date: Date | null | undefined): string => {
+    if (!date) return "Nunca";
+
+    const now = new Date();
+    const diff = now.getTime() - date.getTime();
+    const minutes = Math.floor(diff / 60000);
+    const hours = Math.floor(diff / 3600000);
+    const days = Math.floor(diff / 86400000);
+
+    if (minutes < 1) return "hace un momento";
+    if (minutes < 60) return `hace ${minutes} min`;
+    if (hours < 24) return `hace ${hours}h`;
+    return `hace ${days}d`;
+  };
 
   if (loading) {
     return (
@@ -151,7 +245,7 @@ export default function DocumentSelector({ onSelectDocument }: DocumentSelectorP
 
   return (
     <div style={{
-      maxWidth: "1200px",
+      maxWidth: "1400px",
       margin: "0 auto",
       padding: "40px 20px",
       height: "100vh",
@@ -188,63 +282,193 @@ export default function DocumentSelector({ onSelectDocument }: DocumentSelectorP
             boxSizing: "border-box"
           }}
         />
+
+        {loadingProgress && (
+          <div style={{
+            marginTop: "15px",
+            padding: "10px",
+            background: "#e3f2fd",
+            borderRadius: "5px",
+            fontSize: "14px",
+            color: "#1976d2"
+          }}>
+            ⏳ Cargando progreso de documentos...
+          </div>
+        )}
       </div>
 
       <div style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(350px, 1fr))",
+        gridTemplateColumns: "repeat(auto-fill, minmax(450px, 1fr))",
         gap: "20px"
       }}>
-        {filteredDocs.map((doc) => (
-          <div
-            key={doc.filePath}
-            onClick={() => onSelectDocument(doc.filePath)}
-            style={{
-              padding: "20px",
-              border: "1px solid #ddd",
-              borderRadius: "8px",
-              cursor: "pointer",
-              transition: "all 0.2s",
-              backgroundColor: "#fff"
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = "#2196f3";
-              e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = "#ddd";
-              e.currentTarget.style.boxShadow = "none";
-            }}
-          >
-            <div style={{
-              fontSize: "14px",
-              fontWeight: "bold",
-              marginBottom: "10px",
-              color: "#333",
-              wordBreak: "break-word"
-            }}>
-              {doc.fileName.replace("_HIBRIDO.json", "")}
-            </div>
+        {filteredDocs.map((doc) => {
+          const progress = doc.progress;
+          const hasProgress = progress && progress.totalElementos > 0;
 
-            <div style={{ fontSize: "13px", color: "#666", marginBottom: "5px" }}>
-              <strong>Tipo:</strong> {doc.tipo_documento}
-            </div>
+          return (
+            <div
+              key={doc.filePath}
+              onClick={() => onSelectDocument(doc.filePath)}
+              style={{
+                padding: "20px",
+                border: "2px solid #ddd",
+                borderRadius: "8px",
+                cursor: "pointer",
+                transition: "all 0.2s",
+                backgroundColor: "#fff"
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = "#2196f3";
+                e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "#ddd";
+                e.currentTarget.style.boxShadow = "none";
+              }}
+            >
+              {/* Header */}
+              <div style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+                marginBottom: "15px"
+              }}>
+                <div style={{
+                  fontSize: "15px",
+                  fontWeight: "bold",
+                  color: "#333",
+                  wordBreak: "break-word",
+                  flex: 1
+                }}>
+                  {doc.fileName.replace("_HIBRIDO.json", "")}
+                </div>
 
-            <div style={{ fontSize: "13px", color: "#666" }}>
-              <strong>Parseado:</strong> {doc.fecha_parseo}
-            </div>
+                {hasProgress && (
+                  <div style={{
+                    fontSize: "12px",
+                    fontWeight: "bold",
+                    padding: "4px 10px",
+                    borderRadius: "12px",
+                    backgroundColor: getEstadoColor(progress.estadoManual) + "20",
+                    color: getEstadoColor(progress.estadoManual),
+                    whiteSpace: "nowrap",
+                    marginLeft: "10px"
+                  }}>
+                    {getEstadoLabel(progress.estadoManual)}
+                  </div>
+                )}
+              </div>
 
-            <div style={{
-              marginTop: "15px",
-              textAlign: "right",
-              fontSize: "14px",
-              color: "#2196f3",
-              fontWeight: "500"
-            }}>
-              Abrir →
+              {/* Progress Bar and Stats */}
+              {hasProgress ? (
+                <>
+                  <div style={{
+                    fontSize: "20px",
+                    fontFamily: "monospace",
+                    marginBottom: "8px",
+                    letterSpacing: "1px",
+                    color: progress.porcentajeRevisado === 100 ? "#4caf50" : "#666"
+                  }}>
+                    {renderProgressBar(progress.porcentajeRevisado)} {progress.porcentajeRevisado}%
+                  </div>
+
+                  <div style={{
+                    fontSize: "13px",
+                    color: "#666",
+                    marginBottom: "12px",
+                    display: "flex",
+                    gap: "12px",
+                    flexWrap: "wrap"
+                  }}>
+                    <span>✅ {progress.elementosOK} OK</span>
+                    {progress.elementosDuda > 0 && <span>🟡 {progress.elementosDuda} Duda</span>}
+                    {progress.elementosCorregir > 0 && <span>⚠️ {progress.elementosCorregir} Corregir</span>}
+                    <span>⚪ {progress.elementosPendientes} Pendientes</span>
+                  </div>
+
+                  <div style={{
+                    fontSize: "12px",
+                    color: "#999",
+                    marginBottom: "10px"
+                  }}>
+                    📊 {progress.totalElementos} elementos totales
+                    {progress.desglose.articulos.total > 0 && (
+                      <span> • {progress.desglose.articulos.total} art.</span>
+                    )}
+                    {progress.desglose.incisos.total > 0 && (
+                      <span> • {progress.desglose.incisos.total} incisos</span>
+                    )}
+                    {progress.desglose.clausulas.total > 0 && (
+                      <span> • {progress.desglose.clausulas.total} cláus.</span>
+                    )}
+                  </div>
+
+                  {progress.estadoManual === "terminado" && progress.totalElementos > 0 && (
+                    <div style={{
+                      padding: "8px 12px",
+                      background: "#e8f5e9",
+                      borderRadius: "5px",
+                      fontSize: "12px",
+                      color: "#2e7d32",
+                      marginBottom: "10px"
+                    }}>
+                      ✓ Marcado como terminado
+                      {doc.lastEdited && ` el ${doc.lastEdited.toLocaleDateString()}`}
+                      {doc.editedBy && ` por ${doc.editedBy}`}
+                    </div>
+                  )}
+
+                  {doc.lastEdited && (
+                    <div style={{
+                      fontSize: "12px",
+                      color: "#999"
+                    }}>
+                      🕒 Última edición: {formatTimeAgo(doc.lastEdited)}
+                      {doc.editedBy && ` por ${doc.editedBy}`}
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div style={{
+                  padding: "15px",
+                  background: "#f5f5f5",
+                  borderRadius: "5px",
+                  fontSize: "13px",
+                  color: "#999",
+                  marginBottom: "10px"
+                }}>
+                  ⚪ Sin revisión iniciada
+                  <br />
+                  <span style={{ fontSize: "12px" }}>
+                    Click para comenzar a revisar este documento
+                  </span>
+                </div>
+              )}
+
+              {/* Footer */}
+              <div style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginTop: "15px",
+                paddingTop: "12px",
+                borderTop: "1px solid #eee"
+              }}>
+                <div style={{ fontSize: "12px", color: "#999" }}>
+                  <strong>Tipo:</strong> {doc.tipo_documento}
+                </div>
+                <div style={{
+                  fontSize: "14px",
+                  color: "#2196f3",
+                  fontWeight: "500"
+                }}>
+                  Abrir →
+                </div>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       {filteredDocs.length === 0 && (
@@ -267,6 +491,12 @@ export default function DocumentSelector({ onSelectDocument }: DocumentSelectorP
         color: "#666"
       }}>
         <strong>Total de documentos:</strong> {documents.length} | <strong>Mostrando:</strong> {filteredDocs.length}
+        {!loadingProgress && (
+          <>
+            {" "}| <strong>Con progreso:</strong> {documents.filter(d => d.progress && d.progress.totalElementos > 0).length}
+            {" "}| <strong>Terminados:</strong> {documents.filter(d => d.progress?.estadoManual === "terminado").length}
+          </>
+        )}
       </div>
     </div>
   );

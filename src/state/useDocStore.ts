@@ -68,6 +68,9 @@ interface DocStore {
   // Update preambulo
   updatePreambulo: (preambulo: string) => void;
 
+  // Update estado revision
+  setEstadoRevision: (estado: "pendiente" | "en_revision" | "terminado", userName?: string) => void;
+
   // Helpers
   getCapitulo: (capIndex: number) => Capitulo | undefined;
   getArticulo: (capIndex: number, artIndex: number) => Articulo | undefined;
@@ -610,6 +613,35 @@ export const useDocStore = create<DocStore>((set, get) => ({
           ...state.doc.estructura,
           preambulo
         }
+      }
+    };
+  }),
+
+  // === ESTADO REVISION ===
+  setEstadoRevision: (estado, userName) => set((state) => {
+    if (!state.doc) return state;
+
+    const newMetadata = {
+      ...state.doc.metadata,
+      estado_revision: estado
+    };
+
+    // Si se marca como terminado, guardar fecha y usuario
+    if (estado === "terminado") {
+      newMetadata.fecha_terminado = new Date().toISOString();
+      newMetadata.terminado_por = userName || localStorage.getItem('userName') || 'Usuario';
+    }
+
+    // Si se vuelve a estado anterior, limpiar datos de terminado
+    if (estado !== "terminado") {
+      delete newMetadata.fecha_terminado;
+      delete newMetadata.terminado_por;
+    }
+
+    return {
+      doc: {
+        ...state.doc,
+        metadata: newMetadata
       }
     };
   }),

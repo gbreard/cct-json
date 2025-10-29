@@ -14,8 +14,9 @@ interface ToolbarProps {
 }
 
 export default function Toolbar({ onSave, lastSaved, syncStatus, lastCloudSync }: ToolbarProps) {
-  const { doc, setValidationErrors } = useDocStore();
+  const { doc, setValidationErrors, setEstadoRevision } = useDocStore();
   const [showHelp, setShowHelp] = useState(false);
+  const [showEstadoMenu, setShowEstadoMenu] = useState(false);
 
   const handleValidate = () => {
     if (!doc) return;
@@ -105,6 +106,30 @@ export default function Toolbar({ onSave, lastSaved, syncStatus, lastCloudSync }
     }
   };
 
+  const handleChangeEstado = (nuevoEstado: "pendiente" | "en_revision" | "terminado") => {
+    if (!doc) return;
+
+    if (nuevoEstado === "terminado") {
+      const confirm = window.confirm(
+        `✅ ¿MARCAR COMO TERMINADO?\n\n` +
+        `Este documento se marcará como terminado y aparecerá con estado ✅ TERMINADO en el selector.\n\n` +
+        `Podrás seguir editándolo si es necesario, pero quedará registrado como completado.`
+      );
+      if (!confirm) return;
+    }
+
+    setEstadoRevision(nuevoEstado);
+    setShowEstadoMenu(false);
+
+    const mensajes = {
+      pendiente: "⚪ Documento marcado como PENDIENTE",
+      en_revision: "🟡 Documento marcado como EN REVISIÓN",
+      terminado: "✅ Documento marcado como TERMINADO"
+    };
+
+    alert(mensajes[nuevoEstado]);
+  };
+
   return (
     <div
       style={{
@@ -162,6 +187,104 @@ export default function Toolbar({ onSave, lastSaved, syncStatus, lastCloudSync }
         >
           ❓ Ayuda
         </button>
+
+        <div style={{ borderLeft: "1px solid #ddd", height: "30px", margin: "0 5px" }} />
+
+        {/* Estado del documento */}
+        <div style={{ position: "relative" }}>
+          <button
+            onClick={() => setShowEstadoMenu(!showEstadoMenu)}
+            style={{
+              padding: "10px 20px",
+              background:
+                doc?.metadata?.estado_revision === "terminado" ? "#4caf50" :
+                doc?.metadata?.estado_revision === "en_revision" ? "#ff9800" :
+                "#999",
+              color: "white",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+              fontWeight: "bold"
+            }}
+            title="Cambiar estado del documento"
+          >
+            {doc?.metadata?.estado_revision === "terminado" ? "✅ Terminado" :
+             doc?.metadata?.estado_revision === "en_revision" ? "🟡 En Revisión" :
+             "⚪ Pendiente"} ▾
+          </button>
+
+          {showEstadoMenu && (
+            <div
+              style={{
+                position: "absolute",
+                top: "100%",
+                left: 0,
+                marginTop: "5px",
+                background: "white",
+                border: "1px solid #ddd",
+                borderRadius: "5px",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+                zIndex: 1000,
+                minWidth: "200px"
+              }}
+            >
+              <button
+                onClick={() => handleChangeEstado("pendiente")}
+                style={{
+                  display: "block",
+                  width: "100%",
+                  padding: "12px 20px",
+                  border: "none",
+                  background: doc?.metadata?.estado_revision === "pendiente" ? "#f5f5f5" : "white",
+                  cursor: "pointer",
+                  textAlign: "left",
+                  fontSize: "14px"
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = "#f5f5f5"}
+                onMouseLeave={(e) => e.currentTarget.style.background = doc?.metadata?.estado_revision === "pendiente" ? "#f5f5f5" : "white"}
+              >
+                ⚪ Pendiente
+              </button>
+              <button
+                onClick={() => handleChangeEstado("en_revision")}
+                style={{
+                  display: "block",
+                  width: "100%",
+                  padding: "12px 20px",
+                  border: "none",
+                  background: doc?.metadata?.estado_revision === "en_revision" ? "#f5f5f5" : "white",
+                  cursor: "pointer",
+                  textAlign: "left",
+                  fontSize: "14px",
+                  borderTop: "1px solid #eee"
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = "#f5f5f5"}
+                onMouseLeave={(e) => e.currentTarget.style.background = doc?.metadata?.estado_revision === "en_revision" ? "#f5f5f5" : "white"}
+              >
+                🟡 En Revisión
+              </button>
+              <button
+                onClick={() => handleChangeEstado("terminado")}
+                style={{
+                  display: "block",
+                  width: "100%",
+                  padding: "12px 20px",
+                  border: "none",
+                  background: doc?.metadata?.estado_revision === "terminado" ? "#f5f5f5" : "white",
+                  cursor: "pointer",
+                  textAlign: "left",
+                  fontSize: "14px",
+                  borderTop: "1px solid #eee",
+                  borderRadius: "0 0 5px 5px"
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.background = "#f5f5f5"}
+                onMouseLeave={(e) => e.currentTarget.style.background = doc?.metadata?.estado_revision === "terminado" ? "#f5f5f5" : "white"}
+              >
+                ✅ Marcar como Terminado
+              </button>
+            </div>
+          )}
+        </div>
 
         <div style={{ borderLeft: "1px solid #ddd", height: "30px", margin: "0 5px" }} />
 

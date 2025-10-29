@@ -7,6 +7,9 @@ export interface Metadata {
   fecha_parseo: string;
   longitud_texto: number;
   version_tesauro: string;
+  estado_revision?: "pendiente" | "en_revision" | "terminado";
+  fecha_terminado?: string;
+  terminado_por?: string;
 }
 
 export interface ConceptoDetectado {
