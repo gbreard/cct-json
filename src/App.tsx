@@ -9,7 +9,7 @@ import ProgressTracker from "./components/ProgressTracker";
 import DocumentSelector from "./components/DocumentSelector";
 import Resizer from "./components/Resizer";
 import { useDocStore } from "./state/useDocStore";
-import { useAutosave, getAutosaveData } from "./hooks/useAutosave";
+import { useAutosave, getAutosaveData, getCloudAutosave } from "./hooks/useAutosave";
 import "./App.css";
 
 function App() {
@@ -18,7 +18,7 @@ function App() {
   const [selectedDocPath, setSelectedDocPath] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [pdfSearchText, setPdfSearchText] = useState<string | undefined>(undefined);
-  const { lastSaved, isSaving } = useAutosave(30000); // Autosave cada 30 segundos
+  const { lastSaved, isSaving, syncStatus, lastCloudSync } = useAutosave(30000); // Autosave cada 30 segundos
 
   // Estados para anchos de paneles redimensionables
   const [sidebarWidth, setSidebarWidth] = useState(300);
@@ -99,29 +99,75 @@ function App() {
         throw new Error("El documento no tiene la estructura esperada (falta metadata o estructura)");
       }
 
-      // Revisar si hay autosave guardado - SIEMPRE RESTAURAR AUTOMÁTICAMENTE
+      // Revisar AMBOS: autosave local Y cloud - ELEGIR EL MÁS RECIENTE
       const fileName = json.metadata.nombre_archivo;
-      const autosaveData = getAutosaveData(fileName);
+      const localData = getAutosaveData(fileName);
+      const cloudData = await getCloudAutosave(fileName);
 
       let documentToLoad = json;
+      let source = 'original';
+      let notificationMessage = '';
 
-      if (autosaveData && autosaveData.timestamp) {
-        // Hay autosave guardado - restaurar automáticamente
-        const savedDate = new Date(autosaveData.timestamp);
-        const timeAgo = Math.round((new Date().getTime() - savedDate.getTime()) / 60000); // minutos
+      // Comparar versiones
+      if (localData && cloudData) {
+        // Ambos existen - elegir el más reciente
+        const localTime = new Date(localData.timestamp).getTime();
+        const cloudTime = new Date(cloudData.timestamp).getTime();
 
-        console.log(`✅ Restaurando automáticamente cambios guardados hace ${timeAgo} minuto(s)`);
-        documentToLoad = autosaveData.data;
+        if (localTime > cloudTime) {
+          // Local más reciente
+          documentToLoad = localData.data;
+          source = 'local';
+          const timeAgo = Math.round((new Date().getTime() - localTime) / 60000);
+          notificationMessage =
+            `✅ Cargada versión LOCAL (más reciente)\n\n` +
+            `Tu versión local es más nueva que la del servidor.\n` +
+            `Guardada hace ${timeAgo} minuto${timeAgo !== 1 ? 's' : ''} en este navegador.\n\n` +
+            `Se sincronizará automáticamente al servidor cada 30 segundos.`;
+        } else {
+          // Cloud más reciente
+          documentToLoad = cloudData.data;
+          source = 'cloud';
+          const timeAgo = Math.round((new Date().getTime() - cloudTime) / 60000);
+          notificationMessage =
+            `☁️ Cargada versión del SERVIDOR (más reciente)\n\n` +
+            `Última edición: ${cloudData.userName || 'Usuario'}\n` +
+            `Hace ${timeAgo} minuto${timeAgo !== 1 ? 's' : ''}.\n\n` +
+            `Esta versión fue guardada desde otra PC o usuario.\n` +
+            `Tus cambios se sincronizarán automáticamente cada 30 segundos.`;
+        }
+      } else if (cloudData) {
+        // Solo existe en cloud
+        documentToLoad = cloudData.data;
+        source = 'cloud';
+        const timeAgo = Math.round((new Date().getTime() - new Date(cloudData.timestamp).getTime()) / 60000);
+        notificationMessage =
+          `☁️ Cargada versión del SERVIDOR\n\n` +
+          `Última edición: ${cloudData.userName || 'Usuario'}\n` +
+          `Hace ${timeAgo} minuto${timeAgo !== 1 ? 's' : ''}.\n\n` +
+          `No había versión local en este navegador.\n` +
+          `Ahora puedes continuar editando y se guardará automáticamente.`;
+      } else if (localData) {
+        // Solo existe local
+        documentToLoad = localData.data;
+        source = 'local';
+        const timeAgo = Math.round((new Date().getTime() - new Date(localData.timestamp).getTime()) / 60000);
+        notificationMessage =
+          `✅ Cargada versión LOCAL\n\n` +
+          `Guardada hace ${timeAgo} minuto${timeAgo !== 1 ? 's' : ''} en este navegador.\n\n` +
+          `No se encontró versión en el servidor.\n` +
+          `Se sincronizará automáticamente cada 30 segundos.`;
+      } else {
+        // No hay ninguna versión guardada - usar original
+        notificationMessage =
+          `📄 Cargada versión ORIGINAL del servidor\n\n` +
+          `No se encontraron cambios previos guardados.\n` +
+          `El guardado automático comenzará en 30 segundos.`;
+      }
 
-        // Mostrar notificación al usuario
-        setTimeout(() => {
-          alert(
-            `✅ Cambios recuperados automáticamente\n\n` +
-            `Se restauraron tus cambios guardados hace ${timeAgo} minuto${timeAgo !== 1 ? 's' : ''}.\n\n` +
-            `El editor siempre continúa donde quedaste.\n` +
-            `Tus cambios están seguros y se guardan automáticamente cada 30 segundos.`
-          );
-        }, 500);
+      console.log(`📂 Documento cargado desde: ${source}`);
+      if (notificationMessage) {
+        setTimeout(() => alert(notificationMessage), 500);
       }
 
       // Cargar el documento elegido
@@ -240,7 +286,13 @@ function App() {
   // Si hay documento, mostrar editor
   return (
     <div className="app-container">
-      <Toolbar onSave={handleSave} lastSaved={lastSaved} isSaving={isSaving} />
+      <Toolbar
+        onSave={handleSave}
+        lastSaved={lastSaved}
+        isSaving={isSaving}
+        syncStatus={syncStatus}
+        lastCloudSync={lastCloudSync}
+      />
 
       <div style={{
         padding: "10px 20px",

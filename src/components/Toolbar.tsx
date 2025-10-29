@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDocStore } from "../state/useDocStore";
 import { validateCapitulosUnicos, validateArticulosUnicos } from "../lib/validator";
-import { getAutosaveData, clearAutosave } from "../hooks/useAutosave";
+import { getAutosaveData, clearAutosave, type SyncStatus } from "../hooks/useAutosave";
 import SearchBar from "./SearchBar";
 import HelpModal from "./HelpModal";
 
@@ -9,9 +9,11 @@ interface ToolbarProps {
   onSave: () => void;
   lastSaved?: Date | null;
   isSaving?: boolean;
+  syncStatus?: SyncStatus;
+  lastCloudSync?: Date | null;
 }
 
-export default function Toolbar({ onSave, lastSaved, isSaving }: ToolbarProps) {
+export default function Toolbar({ onSave, lastSaved, isSaving, syncStatus, lastCloudSync }: ToolbarProps) {
   const { doc, setValidationErrors } = useDocStore();
   const [showHelp, setShowHelp] = useState(false);
 
@@ -201,27 +203,75 @@ export default function Toolbar({ onSave, lastSaved, isSaving }: ToolbarProps) {
       </div>
 
       <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
-        {/* Autosave indicator */}
-        {lastSaved && (
+        {/* Cloud sync indicator */}
+        {syncStatus && syncStatus !== 'idle' && (
           <div style={{
             fontSize: "13px",
-            color: isSaving ? "#2196f3" : "#999",
+            display: "flex",
+            alignItems: "center",
+            gap: "5px",
+            padding: "6px 12px",
+            borderRadius: "4px",
+            background:
+              syncStatus === 'synced' ? "#e8f5e9" :
+              syncStatus === 'syncing' ? "#e3f2fd" :
+              syncStatus === 'error' ? "#ffebee" :
+              "#f5f5f5",
+            color:
+              syncStatus === 'synced' ? "#2e7d32" :
+              syncStatus === 'syncing' ? "#1976d2" :
+              syncStatus === 'error' ? "#c62828" :
+              "#666"
+          }}>
+            {syncStatus === 'saving' && (
+              <>
+                <span>💾</span>
+                <span>Guardando local...</span>
+              </>
+            )}
+            {syncStatus === 'syncing' && (
+              <>
+                <span style={{ animation: "spin 1s linear infinite" }}>☁️</span>
+                <span>Sincronizando...</span>
+              </>
+            )}
+            {syncStatus === 'synced' && (
+              <>
+                <span>✓</span>
+                <span>Sincronizado con servidor</span>
+              </>
+            )}
+            {syncStatus === 'error' && (
+              <>
+                <span>⚠️</span>
+                <span>Error sincronizando (local OK)</span>
+              </>
+            )}
+          </div>
+        )}
+
+        {/* Local autosave indicator */}
+        {lastSaved && syncStatus === 'idle' && (
+          <div style={{
+            fontSize: "13px",
+            color: "#999",
             display: "flex",
             alignItems: "center",
             gap: "5px"
           }}>
-            {isSaving ? (
-              <>
-                <span style={{ animation: "pulse 1s infinite" }}>💾</span>
-                Guardando...
-              </>
-            ) : (
-              <>
-                ✓ Guardado {new Date().getTime() - lastSaved.getTime() < 60000
+            <>
+              💾 Local: {new Date().getTime() - lastSaved.getTime() < 60000
+                ? "hace un momento"
+                : `hace ${Math.floor((new Date().getTime() - lastSaved.getTime()) / 60000)} min`
+              }
+            </>
+            {lastCloudSync && (
+              <span style={{ marginLeft: "10px" }}>
+                | ☁️ Servidor: {new Date().getTime() - lastCloudSync.getTime() < 60000
                   ? "hace un momento"
-                  : `${Math.floor((new Date().getTime() - lastSaved.getTime()) / 60000)} min`
+                  : `hace ${Math.floor((new Date().getTime() - lastCloudSync.getTime()) / 60000)} min`
                 }
-              </>
+              </span>
             )}
           </div>
         )}
