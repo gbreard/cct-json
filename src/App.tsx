@@ -9,12 +9,13 @@ import StatusFilterComponent from "./components/StatusFilter";
 import ProgressTracker from "./components/ProgressTracker";
 import CategorySelector from "./components/CategorySelector";
 import DocumentSelector from "./components/DocumentSelector";
+import TesaurosHub, { type TesaurosView } from "./components/TesaurosHub";
 import Resizer from "./components/Resizer";
 import { useDocStore } from "./state/useDocStore";
 import { useAutosave, getAutosaveData, getCloudAutosave } from "./hooks/useAutosave";
 import "./App.css";
 
-type NavigationLevel = "category" | "document" | "editor";
+type NavigationLevel = "category" | "document" | "editor" | "tesauros" | "tesauros-view";
 type EditorTab = "editor" | "conceptos";
 
 function App() {
@@ -36,6 +37,9 @@ function App() {
 
   // Estado para detectar si estamos en modo validación de conceptos
   const [isValidationMode, setIsValidationMode] = useState(false);
+
+  // Estado para gestión de tesauros
+  const [activeTesaurosView, setActiveTesaurosView] = useState<TesaurosView | null>(null);
 
   // Efecto para extraer contenido del elemento seleccionado y buscarlo en el PDF
   useEffect(() => {
@@ -120,7 +124,66 @@ function App() {
   const handleBackToCategories = () => {
     setSelectedCategory(null);
     setIsValidationMode(false);
+    setActiveTesaurosView(null);
     setNavigationLevel("category");
+  };
+
+  const handleSelectTesauros = () => {
+    setNavigationLevel("tesauros");
+  };
+
+  const handleSelectTesaurosView = (view: TesaurosView) => {
+    setActiveTesaurosView(view);
+
+    if (view === "validar") {
+      // Ir al selector de documentos en modo validación
+      setIsValidationMode(true);
+      setSelectedCategory({
+        id: "validacion-conceptos",
+        name: "Validación de Conceptos"
+      });
+      setActiveTab("conceptos");
+      setNavigationLevel("document");
+    } else if (view === "editor") {
+      // Ir al editor de tesauro
+      setNavigationLevel("tesauros-view");
+    } else if (view === "descargar") {
+      // Descargar tesauro directamente
+      handleDescargarTesauro();
+      // Permanecer en el hub
+    }
+  };
+
+  const handleBackToTesaurosHub = () => {
+    setActiveTesaurosView(null);
+    setNavigationLevel("tesauros");
+  };
+
+  const handleDescargarTesauro = async () => {
+    try {
+      const res = await fetch("/tesauro_convenios_colectivos.json");
+      const tesauro = await res.json();
+
+      const fecha = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+      const nombreArchivo = `tesauro_completo_${fecha}.json`;
+
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(tesauro, null, 2));
+      const downloadAnchor = document.createElement("a");
+      downloadAnchor.href = dataStr;
+      downloadAnchor.download = nombreArchivo;
+      downloadAnchor.click();
+
+      alert(
+        `✅ Tesauro descargado exitosamente\n\n` +
+        `Archivo: ${nombreArchivo}\n` +
+        `Conceptos incluidos: ${tesauro.tesauro.conceptos.length}\n` +
+        `Versión: ${tesauro.tesauro.version}\n` +
+        `Última actualización: ${tesauro.tesauro.fecha_actualizacion}`
+      );
+    } catch (error) {
+      console.error("Error al descargar tesauro:", error);
+      alert("❌ Error al descargar el tesauro. Revisa la consola para más detalles.");
+    }
   };
 
   const handleSelectDocument = async (filePath: string) => {
@@ -313,7 +376,52 @@ function App() {
 
   // Vista 1: Selector de categorías
   if (navigationLevel === "category") {
-    return <CategorySelector onSelectCategory={handleSelectCategory} />;
+    return <CategorySelector onSelectCategory={handleSelectCategory} onSelectTesauros={handleSelectTesauros} />;
+  }
+
+  // Vista Tesauros Hub
+  if (navigationLevel === "tesauros") {
+    return <TesaurosHub onSelectView={handleSelectTesaurosView} onBack={handleBackToCategories} />;
+  }
+
+  // Vista específica de tesauros (por ahora solo editor)
+  if (navigationLevel === "tesauros-view") {
+    if (activeTesaurosView === "editor") {
+      // TODO: Implementar EditorTesauro
+      return (
+        <div style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100vh",
+          padding: "40px"
+        }}>
+          <h1 style={{ fontSize: "32px", color: "#673ab7", marginBottom: "20px" }}>
+            📚 Editor de Tesauro
+          </h1>
+          <p style={{ fontSize: "18px", color: "#666", marginBottom: "30px" }}>
+            Próximamente: Interfaz para agregar y editar conceptos del diccionario
+          </p>
+          <button
+            onClick={handleBackToTesaurosHub}
+            style={{
+              padding: "12px 24px",
+              background: "#673ab7",
+              color: "white",
+              border: "none",
+              borderRadius: "8px",
+              cursor: "pointer",
+              fontSize: "16px",
+              fontWeight: "bold"
+            }}
+          >
+            ← Volver a Gestión de Tesauros
+          </button>
+        </div>
+      );
+    }
+    return null;
   }
 
   // Vista 2: Selector de documentos

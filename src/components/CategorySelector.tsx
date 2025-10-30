@@ -10,15 +10,16 @@ export interface CCTCategory {
 
 interface CategorySelectorProps {
   onSelectCategory: (categoryId: string) => void;
+  onSelectTesauros?: () => void;
 }
 
-export default function CategorySelector({ onSelectCategory }: CategorySelectorProps) {
+export default function CategorySelector({ onSelectCategory, onSelectTesauros }: CategorySelectorProps) {
   const [categories, setCategories] = useState<CCTCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAbout, setShowAbout] = useState(true);
 
   useEffect(() => {
-    // Configuración de categorías de CCT
+    // Configuración de categorías de CCT (solo para Abogada 1)
     const availableCategories: CCTCategory[] = [
       {
         id: "130-75",
@@ -40,13 +41,6 @@ export default function CategorySelector({ onSelectCategory }: CategorySelectorP
         descripcion: "Convenios Colectivos 100 (próximamente)",
         patron: "^100-",
         color: "#ff9800"
-      },
-      {
-        id: "validacion-conceptos",
-        nombre: "Validación de Conceptos",
-        descripcion: "Revisión de tesauros y ontología en documentos terminados",
-        patron: "", // No filtra por nombre - filtra por estado
-        color: "#673ab7"
       }
     ];
 
@@ -276,7 +270,7 @@ export default function CategorySelector({ onSelectCategory }: CategorySelectorP
         marginBottom: "40px"
       }}>
         {categories.map((category) => {
-          const isAvailable = category.id === "130-75" || category.id === "validacion-conceptos";
+          const isAvailable = category.id === "130-75";
           const isComingSoon = !isAvailable;
 
           return (
@@ -365,9 +359,7 @@ export default function CategorySelector({ onSelectCategory }: CategorySelectorP
                   fontWeight: "bold",
                   textAlign: "center"
                 }}>
-                  {category.id === "validacion-conceptos"
-                    ? "Documentos terminados para validación"
-                    : "18 documentos disponibles"}
+                  18 documentos disponibles
                 </div>
               )}
 
@@ -386,6 +378,145 @@ export default function CategorySelector({ onSelectCategory }: CategorySelectorP
             </div>
           );
         })}
+      </div>
+
+      {/* SECCIÓN 2: Gestión de Tesauros y Ontología (Abogada 2) */}
+      <div style={{ marginTop: "60px", marginBottom: "30px" }}>
+        <h2 style={{
+          fontSize: "28px",
+          marginBottom: "10px",
+          color: "#333",
+          fontWeight: "bold"
+        }}>
+          🔍 Gestión de Tesauros y Ontología
+        </h2>
+        <p style={{
+          fontSize: "16px",
+          color: "#666",
+          marginBottom: "20px"
+        }}>
+          Herramientas especializadas para revisión y gestión de conceptos del tesauro
+        </p>
+      </div>
+
+      {/* Card única para acceder a Gestión de Tesauros */}
+      <div
+        onClick={() => onSelectTesauros && onSelectTesauros()}
+        style={{
+          background: "white",
+          padding: "40px",
+          borderRadius: "12px",
+          cursor: "pointer",
+          transition: "all 0.3s ease",
+          boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
+          border: "3px solid #673ab7",
+          marginBottom: "40px"
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = "translateY(-5px)";
+          e.currentTarget.style.boxShadow = "0 8px 25px rgba(0,0,0,0.15)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = "translateY(0)";
+          e.currentTarget.style.boxShadow = "0 4px 15px rgba(0,0,0,0.1)";
+        }}
+      >
+        {/* Icono grande */}
+        <div style={{
+          fontSize: "80px",
+          marginBottom: "20px",
+          color: "#673ab7",
+          textAlign: "center"
+        }}>
+          🔍
+        </div>
+
+        {/* Título */}
+        <h3 style={{
+          fontSize: "28px",
+          fontWeight: "bold",
+          color: "#673ab7",
+          marginBottom: "20px",
+          textAlign: "center"
+        }}>
+          Gestión de Tesauros y Ontología
+        </h3>
+
+        {/* Descripción */}
+        <p style={{
+          fontSize: "16px",
+          color: "#666",
+          lineHeight: "1.6",
+          marginBottom: "30px",
+          textAlign: "center"
+        }}>
+          Espacio especializado para la validación de conceptos en documentos terminados,
+          edición del diccionario de tesauros y gestión de la ontología completa
+        </p>
+
+        {/* Lista de funcionalidades */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+          gap: "20px",
+          marginBottom: "20px"
+        }}>
+          <div style={{
+            padding: "20px",
+            background: "#f3e5f5",
+            borderRadius: "8px",
+            border: "2px solid #673ab7"
+          }}>
+            <div style={{ fontSize: "32px", marginBottom: "10px" }}>📋</div>
+            <div style={{ fontWeight: "bold", color: "#673ab7", marginBottom: "8px" }}>
+              Validar Conceptos en CCT
+            </div>
+            <div style={{ fontSize: "13px", color: "#666" }}>
+              Revisa y valida conceptos detectados en documentos terminados
+            </div>
+          </div>
+
+          <div style={{
+            padding: "20px",
+            background: "#f3e5f5",
+            borderRadius: "8px",
+            border: "2px solid #673ab7"
+          }}>
+            <div style={{ fontSize: "32px", marginBottom: "10px" }}>📚</div>
+            <div style={{ fontWeight: "bold", color: "#673ab7", marginBottom: "8px" }}>
+              Editor de Tesauro
+            </div>
+            <div style={{ fontSize: "13px", color: "#666" }}>
+              Agrega, edita y gestiona conceptos del diccionario
+            </div>
+          </div>
+
+          <div style={{
+            padding: "20px",
+            background: "#f3e5f5",
+            borderRadius: "8px",
+            border: "2px solid #673ab7"
+          }}>
+            <div style={{ fontSize: "32px", marginBottom: "10px" }}>💾</div>
+            <div style={{ fontWeight: "bold", color: "#673ab7", marginBottom: "8px" }}>
+              Descargar Tesauro
+            </div>
+            <div style={{ fontSize: "13px", color: "#666" }}>
+              Exporta el tesauro completo en formato JSON
+            </div>
+          </div>
+        </div>
+
+        {/* Botón de acción */}
+        <div style={{
+          marginTop: "20px",
+          fontSize: "18px",
+          color: "#673ab7",
+          fontWeight: "bold",
+          textAlign: "center"
+        }}>
+          Ingresar a Gestión de Tesauros →
+        </div>
       </div>
 
       {/* Footer con información */}
