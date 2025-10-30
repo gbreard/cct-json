@@ -37,12 +37,6 @@ export default function EditorTesauro({ onBack }: EditorTesauroProps) {
     ejemplos: []
   });
 
-  // Helper: Buscar término preferido por ID
-  const getTerminoPorId = (id: string): string => {
-    const concepto = conceptos.find(c => c.id === id);
-    return concepto ? concepto.termino_preferido : id;
-  };
-
   // Helper: Formatear relación mostrando término (ID)
   const formatearRelacion = (id: string): string => {
     const concepto = conceptos.find(c => c.id === id);
