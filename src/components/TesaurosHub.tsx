@@ -9,6 +9,7 @@ interface TesaurosHubProps {
 
 export default function TesaurosHub({ onSelectView, onBack }: TesaurosHubProps) {
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  const [panelExpanded, setPanelExpanded] = useState(false);
 
   const views = [
     {
@@ -92,59 +93,85 @@ export default function TesaurosHub({ onSelectView, onBack }: TesaurosHubProps) 
         </p>
       </div>
 
-      {/* Panel informativo */}
+      {/* Panel informativo colapsable */}
       <div style={{
         background: "linear-gradient(135deg, #673ab7 0%, #512da8 100%)",
         borderRadius: "12px",
-        padding: "30px",
+        padding: "20px 30px",
         marginBottom: "40px",
         boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
         color: "white"
       }}>
-        <h2 style={{
-          fontSize: "24px",
-          marginBottom: "15px",
-          fontWeight: "bold"
-        }}>
-          Acerca de esta Sección
-        </h2>
-        <p style={{
-          fontSize: "16px",
-          lineHeight: "1.8",
-          marginBottom: "20px"
-        }}>
-          Esta área está diseñada específicamente para la gestión de la ontología y el tesauro de conceptos.
-          Aquí puedes validar conceptos en documentos terminados, editar el diccionario de términos y
-          descargar el tesauro completo para respaldo.
-        </p>
-        <div style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-          gap: "15px",
-          fontSize: "14px"
-        }}>
-          <div style={{
-            padding: "12px",
-            background: "rgba(255,255,255,0.15)",
-            borderRadius: "8px"
+        <div
+          onClick={() => setPanelExpanded(!panelExpanded)}
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            cursor: "pointer",
+            userSelect: "none"
+          }}
+        >
+          <h2 style={{
+            fontSize: "24px",
+            margin: "0",
+            fontWeight: "bold"
           }}>
-            <strong>Conceptos en Tesauro:</strong> 4608
-          </div>
-          <div style={{
-            padding: "12px",
-            background: "rgba(255,255,255,0.15)",
-            borderRadius: "8px"
+            Acerca de esta Sección
+          </h2>
+          <span style={{
+            fontSize: "28px",
+            transition: "transform 0.3s",
+            transform: panelExpanded ? "rotate(180deg)" : "rotate(0deg)"
           }}>
-            <strong>Versión:</strong> v4.249
-          </div>
-          <div style={{
-            padding: "12px",
-            background: "rgba(255,255,255,0.15)",
-            borderRadius: "8px"
-          }}>
-            <strong>Última actualización:</strong> 2025-10-16
-          </div>
+            ▼
+          </span>
         </div>
+
+        {panelExpanded && (
+          <div style={{
+            marginTop: "20px",
+            animation: "fadeIn 0.3s ease-in"
+          }}>
+            <p style={{
+              fontSize: "16px",
+              lineHeight: "1.8",
+              marginBottom: "20px"
+            }}>
+              Esta área está diseñada específicamente para la gestión de la ontología y el tesauro de conceptos.
+              Aquí puedes validar conceptos en documentos terminados, editar el diccionario de términos y
+              descargar el tesauro completo para respaldo.
+            </p>
+            <div style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+              gap: "15px",
+              fontSize: "14px"
+            }}>
+              <div style={{
+                padding: "12px",
+                background: "rgba(255,255,255,0.15)",
+                borderRadius: "8px"
+              }}>
+                <strong>Conceptos en Tesauro:</strong> 4608
+              </div>
+              <div style={{
+                padding: "12px",
+                background: "rgba(255,255,255,0.15)",
+                borderRadius: "8px"
+              }}>
+                <strong>Versión:</strong> v4.249
+              </div>
+              <div style={{
+                padding: "12px",
+                background: "rgba(255,255,255,0.15)",
+                borderRadius: "8px"
+              }}>
+                <strong>Última actualización:</strong> 2025-10-16
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Cards de opciones */}
