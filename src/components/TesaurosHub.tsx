@@ -9,6 +9,7 @@ interface TesaurosHubProps {
 
 export default function TesaurosHub({ onSelectView, onBack }: TesaurosHubProps) {
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
+  // Panel colapsado por defecto
   const [panelExpanded, setPanelExpanded] = useState(false);
 
   const views = [
@@ -117,7 +118,7 @@ export default function TesaurosHub({ onSelectView, onBack }: TesaurosHubProps) 
             margin: "0",
             fontWeight: "bold"
           }}>
-            Acerca de esta Sección
+            ℹ️ Acerca de esta Sección
           </h2>
           <span style={{
             fontSize: "28px",
