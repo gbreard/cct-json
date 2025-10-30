@@ -34,6 +34,9 @@ function App() {
   // Estado para el tab activo en el editor
   const [activeTab, setActiveTab] = useState<EditorTab>("editor");
 
+  // Estado para detectar si estamos en modo validación de conceptos
+  const [isValidationMode, setIsValidationMode] = useState(false);
+
   // Efecto para extraer contenido del elemento seleccionado y buscarlo en el PDF
   useEffect(() => {
     if (!doc || !selected) {
@@ -88,11 +91,23 @@ function App() {
   };
 
   const handleSelectCategory = (categoryId: string) => {
+    // Detectar modo validación
+    const isValidation = categoryId === "validacion-conceptos";
+    setIsValidationMode(isValidation);
+
+    // Si es modo validación, forzar el tab de conceptos
+    if (isValidation) {
+      setActiveTab("conceptos");
+    } else {
+      setActiveTab("editor");
+    }
+
     // Mapeo de IDs a nombres
     const categoryNames: { [key: string]: string } = {
       "130-75": "CCT 130/75",
       "75": "CCT 75",
-      "100": "CCT 100"
+      "100": "CCT 100",
+      "validacion-conceptos": "Validación de Conceptos"
     };
 
     setSelectedCategory({
@@ -104,6 +119,7 @@ function App() {
 
   const handleBackToCategories = () => {
     setSelectedCategory(null);
+    setIsValidationMode(false);
     setNavigationLevel("category");
   };
 
@@ -325,6 +341,7 @@ function App() {
         categoryId={selectedCategory?.id}
         categoryName={selectedCategory?.name}
         onBack={handleBackToCategories}
+        isValidationMode={isValidationMode}
       />
     );
   }
@@ -423,49 +440,51 @@ function App() {
         <Resizer onResize={(deltaX) => setSidebarWidth(prev => Math.max(200, Math.min(600, prev + deltaX)))} />
 
         <main className="main-content" style={{ display: "flex", flexDirection: "column", overflow: "hidden" }}>
-          {/* Tabs del editor */}
-          <div style={{
-            display: "flex",
-            borderBottom: "2px solid #e0e0e0",
-            background: "#f5f5f5"
-          }}>
-            <button
-              onClick={() => setActiveTab("editor")}
-              style={{
-                padding: "12px 24px",
-                background: activeTab === "editor" ? "white" : "transparent",
-                color: activeTab === "editor" ? "#2196f3" : "#666",
-                border: "none",
-                borderBottom: activeTab === "editor" ? "3px solid #2196f3" : "none",
-                cursor: "pointer",
-                fontSize: "14px",
-                fontWeight: "bold",
-                transition: "all 0.2s"
-              }}
-            >
-              📝 Editor
-            </button>
-            <button
-              onClick={() => setActiveTab("conceptos")}
-              style={{
-                padding: "12px 24px",
-                background: activeTab === "conceptos" ? "white" : "transparent",
-                color: activeTab === "conceptos" ? "#2196f3" : "#666",
-                border: "none",
-                borderBottom: activeTab === "conceptos" ? "3px solid #2196f3" : "none",
-                cursor: "pointer",
-                fontSize: "14px",
-                fontWeight: "bold",
-                transition: "all 0.2s"
-              }}
-            >
-              🔍 Conceptos (Tesauro)
-            </button>
-          </div>
+          {/* Tabs del editor - ocultar tab Editor si estamos en modo validación */}
+          {!isValidationMode && (
+            <div style={{
+              display: "flex",
+              borderBottom: "2px solid #e0e0e0",
+              background: "#f5f5f5"
+            }}>
+              <button
+                onClick={() => setActiveTab("editor")}
+                style={{
+                  padding: "12px 24px",
+                  background: activeTab === "editor" ? "white" : "transparent",
+                  color: activeTab === "editor" ? "#2196f3" : "#666",
+                  border: "none",
+                  borderBottom: activeTab === "editor" ? "3px solid #2196f3" : "none",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                  transition: "all 0.2s"
+                }}
+              >
+                📝 Editor
+              </button>
+              <button
+                onClick={() => setActiveTab("conceptos")}
+                style={{
+                  padding: "12px 24px",
+                  background: activeTab === "conceptos" ? "white" : "transparent",
+                  color: activeTab === "conceptos" ? "#2196f3" : "#666",
+                  border: "none",
+                  borderBottom: activeTab === "conceptos" ? "3px solid #2196f3" : "none",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                  fontWeight: "bold",
+                  transition: "all 0.2s"
+                }}
+              >
+                🔍 Conceptos (Tesauro)
+              </button>
+            </div>
+          )}
 
           {/* Contenido del tab activo */}
           <div style={{ flex: 1, overflow: "hidden" }}>
-            {activeTab === "editor" && <EditorForm />}
+            {!isValidationMode && activeTab === "editor" && <EditorForm />}
             {activeTab === "conceptos" && <ConceptosTab />}
           </div>
         </main>

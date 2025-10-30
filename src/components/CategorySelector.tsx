@@ -40,6 +40,13 @@ export default function CategorySelector({ onSelectCategory }: CategorySelectorP
         descripcion: "Convenios Colectivos 100 (próximamente)",
         patron: "^100-",
         color: "#ff9800"
+      },
+      {
+        id: "validacion-conceptos",
+        nombre: "Validación de Conceptos",
+        descripcion: "Revisión de tesauros y ontología en documentos terminados",
+        patron: "", // No filtra por nombre - filtra por estado
+        color: "#673ab7"
       }
     ];
 
@@ -269,7 +276,7 @@ export default function CategorySelector({ onSelectCategory }: CategorySelectorP
         marginBottom: "40px"
       }}>
         {categories.map((category) => {
-          const isAvailable = category.id === "130-75";
+          const isAvailable = category.id === "130-75" || category.id === "validacion-conceptos";
           const isComingSoon = !isAvailable;
 
           return (
@@ -324,7 +331,7 @@ export default function CategorySelector({ onSelectCategory }: CategorySelectorP
                 marginBottom: "20px",
                 color: category.color
               }}>
-                📁
+                {category.id === "validacion-conceptos" ? "🔍" : "📁"}
               </div>
 
               {/* Nombre de la categoría */}
@@ -347,7 +354,7 @@ export default function CategorySelector({ onSelectCategory }: CategorySelectorP
                 {category.descripcion}
               </p>
 
-              {/* Indicador de documentos (solo para 130-75) */}
+              {/* Indicador de documentos */}
               {isAvailable && (
                 <div style={{
                   padding: "12px",
@@ -358,7 +365,9 @@ export default function CategorySelector({ onSelectCategory }: CategorySelectorP
                   fontWeight: "bold",
                   textAlign: "center"
                 }}>
-                  18 documentos disponibles
+                  {category.id === "validacion-conceptos"
+                    ? "Documentos terminados para validación"
+                    : "18 documentos disponibles"}
                 </div>
               )}
 

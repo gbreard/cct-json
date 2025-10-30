@@ -8,6 +8,7 @@ interface DocumentSelectorProps {
   categoryId?: string;
   categoryName?: string;
   onBack?: () => void;
+  isValidationMode?: boolean;
 }
 
 interface DocumentWithProgress extends DocumentInfo {
@@ -16,7 +17,7 @@ interface DocumentWithProgress extends DocumentInfo {
   editedBy?: string;
 }
 
-export default function DocumentSelector({ onSelectDocument, categoryId, categoryName, onBack }: DocumentSelectorProps) {
+export default function DocumentSelector({ onSelectDocument, categoryId, categoryName, onBack, isValidationMode }: DocumentSelectorProps) {
   const [documents, setDocuments] = useState<DocumentWithProgress[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -156,7 +157,7 @@ export default function DocumentSelector({ onSelectDocument, categoryId, categor
 
     // Cargar progreso de cada documento en paralelo
     loadAllProgress(filteredByCategory);
-  }, [categoryId]);
+  }, [categoryId, isValidationMode]);
 
   const loadAllProgress = async (docs: DocumentInfo[]) => {
     setLoadingProgress(true);
@@ -217,7 +218,12 @@ export default function DocumentSelector({ onSelectDocument, categoryId, categor
       })
     );
 
-    setDocuments(docsWithProgress);
+    // Si estamos en modo validación, filtrar solo documentos terminados
+    const finalDocs = isValidationMode
+      ? docsWithProgress.filter(doc => doc.progress?.estadoManual === "terminado")
+      : docsWithProgress;
+
+    setDocuments(finalDocs);
     setLoadingProgress(false);
   };
 
