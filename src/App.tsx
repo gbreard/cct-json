@@ -10,6 +10,7 @@ import ProgressTracker from "./components/ProgressTracker";
 import CategorySelector from "./components/CategorySelector";
 import DocumentSelector from "./components/DocumentSelector";
 import TesaurosHub, { type TesaurosView } from "./components/TesaurosHub";
+import EditorTesauro from "./components/EditorTesauro";
 import Resizer from "./components/Resizer";
 import { useDocStore } from "./state/useDocStore";
 import { useAutosave, getAutosaveData, getCloudAutosave } from "./hooks/useAutosave";
@@ -384,42 +385,10 @@ function App() {
     return <TesaurosHub onSelectView={handleSelectTesaurosView} onBack={handleBackToCategories} />;
   }
 
-  // Vista específica de tesauros (por ahora solo editor)
+  // Vista específica de tesauros
   if (navigationLevel === "tesauros-view") {
     if (activeTesaurosView === "editor") {
-      // TODO: Implementar EditorTesauro
-      return (
-        <div style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          height: "100vh",
-          padding: "40px"
-        }}>
-          <h1 style={{ fontSize: "32px", color: "#673ab7", marginBottom: "20px" }}>
-            📚 Editor de Tesauro
-          </h1>
-          <p style={{ fontSize: "18px", color: "#666", marginBottom: "30px" }}>
-            Próximamente: Interfaz para agregar y editar conceptos del diccionario
-          </p>
-          <button
-            onClick={handleBackToTesaurosHub}
-            style={{
-              padding: "12px 24px",
-              background: "#673ab7",
-              color: "white",
-              border: "none",
-              borderRadius: "8px",
-              cursor: "pointer",
-              fontSize: "16px",
-              fontWeight: "bold"
-            }}
-          >
-            ← Volver a Gestión de Tesauros
-          </button>
-        </div>
-      );
+      return <EditorTesauro onBack={handleBackToTesaurosHub} />;
     }
     return null;
   }
