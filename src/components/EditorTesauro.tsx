@@ -21,6 +21,9 @@ export default function EditorTesauro({ onBack }: EditorTesauroProps) {
   const [busqueda, setBusqueda] = useState("");
   const [filtroModificados, setFiltroModificados] = useState<"todos" | "originales" | "modificados">("todos");
 
+  // Historial de navegación para trazabilidad
+  const [historialNavegacion, setHistorialNavegacion] = useState<ConceptoModificado[]>([]);
+
   // Formulario para nuevo concepto / edición
   const [formData, setFormData] = useState<ConceptoModificado>({
     id: "",
@@ -69,6 +72,35 @@ export default function EditorTesauro({ onBack }: EditorTesauroProps) {
 
     // Si no se encuentra, devolver el texto original (podría ser un concepto nuevo)
     return texto.trim();
+  };
+
+  // Navegación: Ir a un concepto relacionado
+  const navegarAConcepto = (id: string) => {
+    const concepto = conceptos.find(c => c.id === id);
+    if (!concepto) {
+      alert(`No se encontró el concepto con ID: ${id}`);
+      return;
+    }
+
+    // Agregar concepto actual al historial antes de navegar
+    if (conceptoSeleccionado) {
+      setHistorialNavegacion(prev => [...prev, conceptoSeleccionado]);
+    }
+
+    setConceptoSeleccionado(concepto);
+    setVista("detalle");
+  };
+
+  // Navegación: Volver al concepto anterior
+  const volverAtras = () => {
+    if (historialNavegacion.length === 0) {
+      setVista("lista");
+      return;
+    }
+
+    const conceptoAnterior = historialNavegacion[historialNavegacion.length - 1];
+    setHistorialNavegacion(prev => prev.slice(0, -1));
+    setConceptoSeleccionado(conceptoAnterior);
   };
 
   // Cargar tesauro y conceptos modificados de localStorage
@@ -569,8 +601,9 @@ export default function EditorTesauro({ onBack }: EditorTesauroProps) {
         height: "100vh",
         boxSizing: "border-box"
       }}>
+        {/* Botón de navegación inteligente */}
         <button
-          onClick={() => setVista("lista")}
+          onClick={volverAtras}
           style={{
             padding: "10px 20px",
             background: "#673ab7",
@@ -583,8 +616,53 @@ export default function EditorTesauro({ onBack }: EditorTesauroProps) {
             marginBottom: "20px"
           }}
         >
-          ← Volver a lista
+          ← {historialNavegacion.length > 0 ? "Volver" : "Volver a lista"}
         </button>
+
+        {/* Breadcrumb de navegación */}
+        {historialNavegacion.length > 0 && (
+          <div style={{
+            background: "white",
+            padding: "15px 20px",
+            borderRadius: "8px",
+            marginBottom: "20px",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+            display: "flex",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: "10px",
+            fontSize: "14px"
+          }}>
+            <span style={{ color: "#999", fontWeight: "bold" }}>Recorrido:</span>
+            {historialNavegacion.map((concepto, idx) => (
+              <span key={idx} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <button
+                  onClick={() => {
+                    // Navegar a un concepto específico en el historial
+                    const nuevaHistoria = historialNavegacion.slice(0, idx);
+                    setHistorialNavegacion(nuevaHistoria);
+                    setConceptoSeleccionado(concepto);
+                  }}
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    color: "#2196f3",
+                    cursor: "pointer",
+                    textDecoration: "underline",
+                    fontSize: "14px",
+                    padding: "2px 4px"
+                  }}
+                >
+                  {concepto.termino_preferido}
+                </button>
+                <span style={{ color: "#ccc" }}>→</span>
+              </span>
+            ))}
+            <span style={{ color: "#673ab7", fontWeight: "bold" }}>
+              {conceptoSeleccionado.termino_preferido}
+            </span>
+          </div>
+        )}
 
         <div style={{
           background: "white",
@@ -674,7 +752,7 @@ export default function EditorTesauro({ onBack }: EditorTesauroProps) {
           {conceptoSeleccionado.relaciones && (
             <div style={{ marginBottom: "25px" }}>
               <h3 style={{ fontSize: "18px", color: "#333", marginBottom: "15px", fontWeight: "bold" }}>
-                Relaciones
+                Relaciones <span style={{ fontSize: "13px", color: "#999", fontWeight: "normal" }}>(haz clic para navegar)</span>
               </h3>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "20px" }}>
                 {conceptoSeleccionado.relaciones.terminos_generales && conceptoSeleccionado.relaciones.terminos_generales.length > 0 && (
@@ -683,7 +761,34 @@ export default function EditorTesauro({ onBack }: EditorTesauroProps) {
                       Términos Generales:
                     </div>
                     {conceptoSeleccionado.relaciones.terminos_generales.map((t, idx) => (
-                      <div key={idx} style={{ fontSize: "14px", color: "#555", marginBottom: "4px" }}>• {formatearRelacion(t)}</div>
+                      <div key={idx} style={{ marginBottom: "8px" }}>
+                        <button
+                          onClick={() => navegarAConcepto(t)}
+                          style={{
+                            background: "transparent",
+                            border: "none",
+                            color: "#2196f3",
+                            cursor: "pointer",
+                            textDecoration: "none",
+                            fontSize: "14px",
+                            padding: "4px 8px",
+                            textAlign: "left",
+                            display: "inline-block",
+                            borderRadius: "4px",
+                            transition: "all 0.2s"
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = "#e3f2fd";
+                            e.currentTarget.style.textDecoration = "underline";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = "transparent";
+                            e.currentTarget.style.textDecoration = "none";
+                          }}
+                        >
+                          • {formatearRelacion(t)}
+                        </button>
+                      </div>
                     ))}
                   </div>
                 )}
@@ -693,7 +798,34 @@ export default function EditorTesauro({ onBack }: EditorTesauroProps) {
                       Términos Específicos:
                     </div>
                     {conceptoSeleccionado.relaciones.terminos_especificos.map((t, idx) => (
-                      <div key={idx} style={{ fontSize: "14px", color: "#555", marginBottom: "4px" }}>• {formatearRelacion(t)}</div>
+                      <div key={idx} style={{ marginBottom: "8px" }}>
+                        <button
+                          onClick={() => navegarAConcepto(t)}
+                          style={{
+                            background: "transparent",
+                            border: "none",
+                            color: "#2196f3",
+                            cursor: "pointer",
+                            textDecoration: "none",
+                            fontSize: "14px",
+                            padding: "4px 8px",
+                            textAlign: "left",
+                            display: "inline-block",
+                            borderRadius: "4px",
+                            transition: "all 0.2s"
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = "#e3f2fd";
+                            e.currentTarget.style.textDecoration = "underline";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = "transparent";
+                            e.currentTarget.style.textDecoration = "none";
+                          }}
+                        >
+                          • {formatearRelacion(t)}
+                        </button>
+                      </div>
                     ))}
                   </div>
                 )}
@@ -703,7 +835,34 @@ export default function EditorTesauro({ onBack }: EditorTesauroProps) {
                       Términos Relacionados:
                     </div>
                     {conceptoSeleccionado.relaciones.terminos_relacionados.map((t, idx) => (
-                      <div key={idx} style={{ fontSize: "14px", color: "#555", marginBottom: "4px" }}>• {formatearRelacion(t)}</div>
+                      <div key={idx} style={{ marginBottom: "8px" }}>
+                        <button
+                          onClick={() => navegarAConcepto(t)}
+                          style={{
+                            background: "transparent",
+                            border: "none",
+                            color: "#2196f3",
+                            cursor: "pointer",
+                            textDecoration: "none",
+                            fontSize: "14px",
+                            padding: "4px 8px",
+                            textAlign: "left",
+                            display: "inline-block",
+                            borderRadius: "4px",
+                            transition: "all 0.2s"
+                          }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = "#e3f2fd";
+                            e.currentTarget.style.textDecoration = "underline";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = "transparent";
+                            e.currentTarget.style.textDecoration = "none";
+                          }}
+                        >
+                          • {formatearRelacion(t)}
+                        </button>
+                      </div>
                     ))}
                   </div>
                 )}
