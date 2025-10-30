@@ -6,15 +6,20 @@ import DiffModal from "./components/DiffModal";
 import Toolbar from "./components/Toolbar";
 import StatusFilterComponent from "./components/StatusFilter";
 import ProgressTracker from "./components/ProgressTracker";
+import CategorySelector from "./components/CategorySelector";
 import DocumentSelector from "./components/DocumentSelector";
 import Resizer from "./components/Resizer";
 import { useDocStore } from "./state/useDocStore";
 import { useAutosave, getAutosaveData, getCloudAutosave } from "./hooks/useAutosave";
 import "./App.css";
 
+type NavigationLevel = "category" | "document" | "editor";
+
 function App() {
   const { doc, setDoc, setOriginal, original, validationErrors, selected } = useDocStore();
   const [showDiff, setShowDiff] = useState(false);
+  const [navigationLevel, setNavigationLevel] = useState<NavigationLevel>("category");
+  const [selectedCategory, setSelectedCategory] = useState<{ id: string; name: string } | null>(null);
   const [selectedDocPath, setSelectedDocPath] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [pdfSearchText, setPdfSearchText] = useState<string | undefined>(undefined);
@@ -75,6 +80,26 @@ function App() {
 
     // La ruta del PDF está en /pdfs/
     return `/pdfs/${pdfName}`;
+  };
+
+  const handleSelectCategory = (categoryId: string) => {
+    // Mapeo de IDs a nombres
+    const categoryNames: { [key: string]: string } = {
+      "130-75": "CCT 130/75",
+      "75": "CCT 75",
+      "100": "CCT 100"
+    };
+
+    setSelectedCategory({
+      id: categoryId,
+      name: categoryNames[categoryId] || categoryId
+    });
+    setNavigationLevel("document");
+  };
+
+  const handleBackToCategories = () => {
+    setSelectedCategory(null);
+    setNavigationLevel("category");
   };
 
   const handleSelectDocument = async (filePath: string) => {
@@ -177,6 +202,7 @@ function App() {
       setDoc(documentToLoad);
       setOriginal(JSON.parse(JSON.stringify(json))); // Original siempre es el del servidor
       setSelectedDocPath(filePath);
+      setNavigationLevel("editor");
       console.log("Documento cargado exitosamente!");
     } catch (error) {
       console.error("ERROR completo:", error);
@@ -192,7 +218,7 @@ function App() {
     }
   };
 
-  const handleBackToSelector = () => {
+  const handleBackToDocumentSelector = () => {
     // Advertencia fuerte y clara sobre el estado del documento
     let message = "⚠️ ¿VOLVER AL SELECTOR DE DOCUMENTOS?\n\n";
 
@@ -216,6 +242,7 @@ function App() {
       setDoc(null);
       setOriginal(null);
       setSelectedDocPath(null);
+      setNavigationLevel("document");
     }
   };
 
@@ -263,8 +290,13 @@ function App() {
     );
   };
 
-  // Si no hay documento seleccionado, mostrar selector
-  if (!selectedDocPath || !doc) {
+  // Vista 1: Selector de categorías
+  if (navigationLevel === "category") {
+    return <CategorySelector onSelectCategory={handleSelectCategory} />;
+  }
+
+  // Vista 2: Selector de documentos
+  if (navigationLevel === "document") {
     if (loading) {
       return (
         <div
@@ -282,7 +314,32 @@ function App() {
       );
     }
 
-    return <DocumentSelector onSelectDocument={handleSelectDocument} />;
+    return (
+      <DocumentSelector
+        onSelectDocument={handleSelectDocument}
+        categoryId={selectedCategory?.id}
+        categoryName={selectedCategory?.name}
+        onBack={handleBackToCategories}
+      />
+    );
+  }
+
+  // Vista 3: Editor (cuando hay documento cargado)
+  if (!selectedDocPath || !doc) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100vh",
+          fontSize: "18px",
+          color: "#666"
+        }}
+      >
+        Cargando documento...
+      </div>
+    );
   }
 
   // Si hay documento, mostrar editor
@@ -331,7 +388,7 @@ function App() {
             background: "#f5f5f5"
           }}>
             <button
-              onClick={handleBackToSelector}
+              onClick={handleBackToDocumentSelector}
               style={{
                 padding: "8px 12px",
                 background: "#666",
