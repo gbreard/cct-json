@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { CCTDocument, Path, Capitulo, Articulo, Clausula, IncisoDetectado, Anexo, SeccionPersonalizada } from "../lib/types";
+import type { CCTDocument, Path, Capitulo, Articulo, Clausula, IncisoDetectado, Anexo, SeccionPersonalizada, ConceptoDetectado } from "../lib/types";
 
 export interface SearchResult {
   type: 'capitulo' | 'articulo' | 'inciso' | 'clausula' | 'preambulo';
@@ -70,6 +70,12 @@ interface DocStore {
 
   // Update estado revision
   setEstadoRevision: (estado: "pendiente" | "en_revision" | "terminado", userName?: string) => void;
+
+  // Validación de conceptos (para Abogada 2 - especialista en tesauros)
+  validarConcepto: (conceptoId: string, userName?: string) => void;
+  corregirConcepto: (conceptoId: string, conceptoCorrecto: string, notas: string, userName?: string) => void;
+  eliminarConcepto: (conceptoId: string, userName?: string) => void;
+  agregarConceptoAArticulo: (capIndex: number, artIndex: number, concepto: ConceptoDetectado) => void;
 
   // Helpers
   getCapitulo: (capIndex: number) => Capitulo | undefined;
@@ -642,6 +648,152 @@ export const useDocStore = create<DocStore>((set, get) => ({
       doc: {
         ...state.doc,
         metadata: newMetadata
+      }
+    };
+  }),
+
+  // === VALIDACIÓN DE CONCEPTOS ===
+  validarConcepto: (conceptoId, userName) => set((state) => {
+    if (!state.doc || !state.doc.estructura.capitulos) return state;
+
+    const user = userName || localStorage.getItem('userName') || 'Usuario';
+    const fechaValidacion = new Date().toISOString();
+
+    // Actualizar el concepto en todos los artículos donde aparece
+    const newCapitulos = state.doc.estructura.capitulos.map((cap) => ({
+      ...cap,
+      articulos: cap.articulos.map((art) => ({
+        ...art,
+        conceptos_detectados: art.conceptos_detectados.map((concepto) =>
+          concepto.id === conceptoId
+            ? {
+                ...concepto,
+                validado: true,
+                validado_por: user,
+                fecha_validacion: fechaValidacion,
+                accion_validacion: "validar" as const
+              }
+            : concepto
+        )
+      }))
+    }));
+
+    return {
+      doc: {
+        ...state.doc,
+        estructura: {
+          ...state.doc.estructura,
+          capitulos: newCapitulos
+        }
+      }
+    };
+  }),
+
+  corregirConcepto: (conceptoId, conceptoCorrecto, notas, userName) => set((state) => {
+    if (!state.doc || !state.doc.estructura.capitulos) return state;
+
+    const user = userName || localStorage.getItem('userName') || 'Usuario';
+    const fechaValidacion = new Date().toISOString();
+
+    // Actualizar el concepto en todos los artículos donde aparece
+    const newCapitulos = state.doc.estructura.capitulos.map((cap) => ({
+      ...cap,
+      articulos: cap.articulos.map((art) => ({
+        ...art,
+        conceptos_detectados: art.conceptos_detectados.map((concepto) =>
+          concepto.id === conceptoId
+            ? {
+                ...concepto,
+                validado: false,
+                validado_por: user,
+                fecha_validacion: fechaValidacion,
+                concepto_correcto: conceptoCorrecto,
+                notas_validacion: notas,
+                accion_validacion: "corregir" as const
+              }
+            : concepto
+        )
+      }))
+    }));
+
+    return {
+      doc: {
+        ...state.doc,
+        estructura: {
+          ...state.doc.estructura,
+          capitulos: newCapitulos
+        }
+      }
+    };
+  }),
+
+  eliminarConcepto: (conceptoId, userName) => set((state) => {
+    if (!state.doc || !state.doc.estructura.capitulos) return state;
+
+    const user = userName || localStorage.getItem('userName') || 'Usuario';
+    const fechaValidacion = new Date().toISOString();
+
+    // Marcar el concepto como eliminado en todos los artículos donde aparece
+    const newCapitulos = state.doc.estructura.capitulos.map((cap) => ({
+      ...cap,
+      articulos: cap.articulos.map((art) => ({
+        ...art,
+        conceptos_detectados: art.conceptos_detectados.map((concepto) =>
+          concepto.id === conceptoId
+            ? {
+                ...concepto,
+                validado: false,
+                validado_por: user,
+                fecha_validacion: fechaValidacion,
+                accion_validacion: "eliminar" as const
+              }
+            : concepto
+        )
+      }))
+    }));
+
+    return {
+      doc: {
+        ...state.doc,
+        estructura: {
+          ...state.doc.estructura,
+          capitulos: newCapitulos
+        }
+      }
+    };
+  }),
+
+  agregarConceptoAArticulo: (capIndex, artIndex, concepto) => set((state) => {
+    if (!state.doc || !state.doc.estructura.capitulos) return state;
+
+    const newCapitulos = [...state.doc.estructura.capitulos];
+    const newArticulos = [...newCapitulos[capIndex].articulos];
+    const articulo = newArticulos[artIndex];
+
+    // Agregar el concepto con validación automática
+    newArticulos[artIndex] = {
+      ...articulo,
+      conceptos_detectados: [
+        ...articulo.conceptos_detectados,
+        {
+          ...concepto,
+          validado: true,
+          validado_por: localStorage.getItem('userName') || 'Usuario',
+          fecha_validacion: new Date().toISOString(),
+          accion_validacion: "validar" as const
+        }
+      ]
+    };
+
+    newCapitulos[capIndex] = { ...newCapitulos[capIndex], articulos: newArticulos };
+
+    return {
+      doc: {
+        ...state.doc,
+        estructura: {
+          ...state.doc.estructura,
+          capitulos: newCapitulos
+        }
       }
     };
   }),

@@ -19,6 +19,13 @@ export interface ConceptoDetectado {
   posiciones: number[];
   confianza: number;
   terminos_encontrados: string[];
+  // Campos de validación para Abogada 2 (especialista en tesauros/ontología)
+  validado?: boolean;
+  validado_por?: string;
+  fecha_validacion?: string;
+  notas_validacion?: string;
+  concepto_correcto?: string; // ID del concepto correcto si se debe cambiar
+  accion_validacion?: "validar" | "corregir" | "eliminar"; // Acción realizada por el validador
 }
 
 export interface TablaDetectada {
@@ -162,4 +169,29 @@ export interface DocumentInfo {
   filePath: string;
   tipo_documento: string;
   fecha_parseo: string;
+}
+
+// Tipos para el Tesauro/Ontología
+export interface ConceptoTesauro {
+  id: string;
+  termino_preferido: string;
+  acronimo?: string;
+  definicion: string;
+  terminos_no_preferidos?: string[];
+  relaciones?: {
+    terminos_especificos?: string[];
+    terminos_generales?: string[];
+    terminos_relacionados?: string[];
+  };
+  notas?: string[];
+  ejemplos?: string[];
+}
+
+export interface Tesauro {
+  tesauro: {
+    ambito: string;
+    fecha_actualizacion: string;
+    version: string;
+    conceptos: ConceptoTesauro[];
+  };
 }

@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import ChapterTree from "./components/ChapterTree";
 import EditorForm from "./components/EditorForm";
+import ConceptosTab from "./components/ConceptosTab";
 import PDFViewer from "./components/PDFViewer";
 import DiffModal from "./components/DiffModal";
 import Toolbar from "./components/Toolbar";
@@ -14,6 +15,7 @@ import { useAutosave, getAutosaveData, getCloudAutosave } from "./hooks/useAutos
 import "./App.css";
 
 type NavigationLevel = "category" | "document" | "editor";
+type EditorTab = "editor" | "conceptos";
 
 function App() {
   const { doc, setDoc, setOriginal, original, validationErrors, selected } = useDocStore();
@@ -28,6 +30,9 @@ function App() {
   // Estados para anchos de paneles redimensionables
   const [sidebarWidth, setSidebarWidth] = useState(300);
   const [pdfWidth, setPdfWidth] = useState(400);
+
+  // Estado para el tab activo en el editor
+  const [activeTab, setActiveTab] = useState<EditorTab>("editor");
 
   // Efecto para extraer contenido del elemento seleccionado y buscarlo en el PDF
   useEffect(() => {
@@ -417,8 +422,52 @@ function App() {
 
         <Resizer onResize={(deltaX) => setSidebarWidth(prev => Math.max(200, Math.min(600, prev + deltaX)))} />
 
-        <main className="main-content">
-          <EditorForm />
+        <main className="main-content" style={{ display: "flex", flexDirection: "column", overflow: "hidden" }}>
+          {/* Tabs del editor */}
+          <div style={{
+            display: "flex",
+            borderBottom: "2px solid #e0e0e0",
+            background: "#f5f5f5"
+          }}>
+            <button
+              onClick={() => setActiveTab("editor")}
+              style={{
+                padding: "12px 24px",
+                background: activeTab === "editor" ? "white" : "transparent",
+                color: activeTab === "editor" ? "#2196f3" : "#666",
+                border: "none",
+                borderBottom: activeTab === "editor" ? "3px solid #2196f3" : "none",
+                cursor: "pointer",
+                fontSize: "14px",
+                fontWeight: "bold",
+                transition: "all 0.2s"
+              }}
+            >
+              📝 Editor
+            </button>
+            <button
+              onClick={() => setActiveTab("conceptos")}
+              style={{
+                padding: "12px 24px",
+                background: activeTab === "conceptos" ? "white" : "transparent",
+                color: activeTab === "conceptos" ? "#2196f3" : "#666",
+                border: "none",
+                borderBottom: activeTab === "conceptos" ? "3px solid #2196f3" : "none",
+                cursor: "pointer",
+                fontSize: "14px",
+                fontWeight: "bold",
+                transition: "all 0.2s"
+              }}
+            >
+              🔍 Conceptos (Tesauro)
+            </button>
+          </div>
+
+          {/* Contenido del tab activo */}
+          <div style={{ flex: 1, overflow: "hidden" }}>
+            {activeTab === "editor" && <EditorForm />}
+            {activeTab === "conceptos" && <ConceptosTab />}
+          </div>
         </main>
 
         <Resizer onResize={(deltaX) => setPdfWidth(prev => Math.max(250, Math.min(800, prev - deltaX)))} />
