@@ -5,6 +5,9 @@ import { calculateProgress, getEstadoLabel, getEstadoColor, type ProgressStats }
 
 interface DocumentSelectorProps {
   onSelectDocument: (filePath: string) => void;
+  categoryId?: string;
+  categoryName?: string;
+  onBack?: () => void;
 }
 
 interface DocumentWithProgress extends DocumentInfo {
@@ -13,7 +16,7 @@ interface DocumentWithProgress extends DocumentInfo {
   editedBy?: string;
 }
 
-export default function DocumentSelector({ onSelectDocument }: DocumentSelectorProps) {
+export default function DocumentSelector({ onSelectDocument, categoryId, categoryName, onBack }: DocumentSelectorProps) {
   const [documents, setDocuments] = useState<DocumentWithProgress[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -132,12 +135,28 @@ export default function DocumentSelector({ onSelectDocument }: DocumentSelectorP
       }
     ];
 
-    setDocuments(availableDocs);
+    // Filtrar documentos por categoría si se especifica
+    let filteredByCategory = availableDocs;
+    if (categoryId) {
+      // Mapeo de categoryId a patrón de búsqueda
+      const categoryPatterns: { [key: string]: RegExp } = {
+        "130-75": /130/i,  // Busca "130" en el nombre del archivo
+        "75": /^75-/i,      // Busca que empiece con "75-"
+        "100": /^100-/i     // Busca que empiece con "100-"
+      };
+
+      const pattern = categoryPatterns[categoryId];
+      if (pattern) {
+        filteredByCategory = availableDocs.filter(doc => pattern.test(doc.fileName));
+      }
+    }
+
+    setDocuments(filteredByCategory);
     setLoading(false);
 
     // Cargar progreso de cada documento en paralelo
-    loadAllProgress(availableDocs);
-  }, []);
+    loadAllProgress(filteredByCategory);
+  }, [categoryId]);
 
   const loadAllProgress = async (docs: DocumentInfo[]) => {
     setLoadingProgress(true);
@@ -253,12 +272,37 @@ export default function DocumentSelector({ onSelectDocument }: DocumentSelectorP
       boxSizing: "border-box"
     }}>
       <div style={{ marginBottom: "30px" }}>
+        {/* Botón volver a categorías */}
+        {onBack && (
+          <button
+            onClick={onBack}
+            style={{
+              marginBottom: "20px",
+              padding: "10px 20px",
+              background: "#666",
+              color: "white",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+              fontSize: "14px",
+              fontWeight: "bold",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px"
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.background = "#555"}
+            onMouseLeave={(e) => e.currentTarget.style.background = "#666"}
+          >
+            ← Volver a Categorías
+          </button>
+        )}
+
         <h1 style={{
           fontSize: "28px",
           marginBottom: "10px",
           color: "#333"
         }}>
-          Editor de CCT - Seleccionar Documento
+          {categoryName ? `${categoryName} - Documentos` : "Editor de CCT - Seleccionar Documento"}
         </h1>
         <p style={{
           fontSize: "16px",
