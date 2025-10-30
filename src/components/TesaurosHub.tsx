@@ -44,7 +44,9 @@ export default function TesaurosHub({ onSelectView, onBack }: TesaurosHubProps) 
       padding: "40px 20px",
       minHeight: "100vh",
       background: "linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)",
-      overflowY: "auto"
+      overflowY: "auto",
+      height: "100vh",
+      boxSizing: "border-box"
     }}>
       {/* Header con botón de volver */}
       <div style={{ marginBottom: "40px" }}>
