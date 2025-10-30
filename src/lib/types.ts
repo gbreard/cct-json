@@ -32,10 +32,19 @@ export interface TablaDetectada {
   [key: string]: any; // Estructura flexible para tablas
 }
 
-// Estructura específica para tablas editables
+// Estructura específica para tablas editables (formato antiguo)
 export interface TablaEditable {
   headers: string[];
   rows: string[][];
+}
+
+// Estructura extendida para múltiples tablas editables (formato nuevo)
+export interface TablaEditableExtendida {
+  id: string; // ID único para identificar la tabla
+  titulo?: string; // Título opcional de la tabla
+  headers: string[];
+  rows: string[][];
+  nota_al_pie?: string; // Nota aclaratoria al pie de la tabla
 }
 
 export interface IncisoDetectado {
@@ -58,7 +67,8 @@ export interface Articulo {
   conceptos_detectados: ConceptoDetectado[];
   tablas_detectadas?: TablaDetectada[]; // Opcional porque algunos JSONs no lo tienen
   contiene_tabla?: boolean; // Indica si el artículo contiene una tabla editable
-  tabla_editable?: TablaEditable; // Tabla estructurada editable en el editor
+  tabla_editable?: TablaEditable; // Tabla estructurada editable (formato antiguo - una sola tabla)
+  tablas_editables?: TablaEditableExtendida[]; // Tablas estructuradas editables (formato nuevo - múltiples tablas)
   status?: "OK" | "Corregir" | "Duda";
   notas_revision?: string; // Notas sobre errores de parseo o correcciones necesarias
   error_estructural?: string; // Descripción de error estructural (ej: "Falta tabla", "Debería ser cláusula")
@@ -86,7 +96,8 @@ export interface Clausula {
   conceptos_detectados: ConceptoDetectado[];
   tablas_detectadas: TablaDetectada[];
   contiene_tabla?: boolean; // Indica si la cláusula contiene una tabla editable
-  tabla_editable?: TablaEditable; // Tabla estructurada editable en el editor
+  tabla_editable?: TablaEditable; // Tabla estructurada editable (formato antiguo - una sola tabla)
+  tablas_editables?: TablaEditableExtendida[]; // Tablas estructuradas editables (formato nuevo - múltiples tablas)
   status?: "OK" | "Corregir" | "Duda";
   notas_revision?: string;
   error_estructural?: string;
@@ -100,7 +111,8 @@ export interface Anexo {
   longitud_caracteres?: number;
   tablas_detectadas: TablaDetectada[];
   contiene_tabla?: boolean; // Indica si el anexo contiene una tabla editable
-  tabla_editable?: TablaEditable; // Tabla estructurada editable en el editor
+  tabla_editable?: TablaEditable; // Tabla estructurada editable (formato antiguo - una sola tabla)
+  tablas_editables?: TablaEditableExtendida[]; // Tablas estructuradas editables (formato nuevo - múltiples tablas)
   status?: "OK" | "Corregir" | "Duda";
   notas_revision?: string;
 }
@@ -114,6 +126,8 @@ export interface SeccionPersonalizada {
   contenido_estructurado?: any; // Para guardar datos estructurados (tablas, etc.)
   nivel?: number; // Nivel de jerarquía (1=principal, 2=subsección, etc.)
   orden?: number; // Para ordenamiento
+  tabla_editable?: TablaEditable; // Tabla estructurada editable (formato antiguo - una sola tabla)
+  tablas_editables?: TablaEditableExtendida[]; // Tablas estructuradas editables (formato nuevo - múltiples tablas)
   status?: "OK" | "Corregir" | "Duda";
   notas_revision?: string;
   error_estructural?: string;
