@@ -1,5 +1,5 @@
 import { useState } from "react";
-import TableEditor, { TableData } from "./TableEditor";
+import TableEditor, { type TableData } from "./TableEditor";
 import type { TablaEditableExtendida, TablaEditable } from "../lib/types";
 
 interface MultiTableEditorProps {

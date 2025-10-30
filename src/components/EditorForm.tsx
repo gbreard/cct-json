@@ -1,5 +1,4 @@
 import { useDocStore } from "../state/useDocStore";
-import TableEditor, { type TableData } from "./TableEditor";
 import MultiTableEditor from "./MultiTableEditor";
 import type { TablaEditableExtendida } from "../lib/types";
 
