@@ -264,9 +264,9 @@ export default function ConceptosTab() {
             }}
           />
 
-          {/* Botón agregar concepto */}
-          <button
-            onClick={() => setShowAgregarConcepto(true)}
+          {/* TODO: Botón agregar concepto - implementar funcionalidad */}
+          {/* <button
+            onClick={() => {}}
             style={{
               padding: "8px 16px",
               background: "#673ab7",
@@ -279,7 +279,7 @@ export default function ConceptosTab() {
             }}
           >
             + Agregar Concepto
-          </button>
+          </button> */}
         </div>
 
         {/* Información del tesauro */}
