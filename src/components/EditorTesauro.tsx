@@ -37,6 +37,46 @@ export default function EditorTesauro({ onBack }: EditorTesauroProps) {
     ejemplos: []
   });
 
+  // Helper: Buscar término preferido por ID
+  const getTerminoPorId = (id: string): string => {
+    const concepto = conceptos.find(c => c.id === id);
+    return concepto ? concepto.termino_preferido : id;
+  };
+
+  // Helper: Formatear relación mostrando término (ID)
+  const formatearRelacion = (id: string): string => {
+    const concepto = conceptos.find(c => c.id === id);
+    if (concepto) {
+      return `${concepto.termino_preferido} (${id})`;
+    }
+    return id;
+  };
+
+  // Helper: Convertir término o ID a ID puro
+  const convertirAId = (texto: string): string => {
+    // Si es un formato "Término (ID)", extraer el ID
+    const matchParentesis = texto.match(/\(([^)]+)\)$/);
+    if (matchParentesis) {
+      return matchParentesis[1];
+    }
+
+    // Si parece un ID (empieza con C seguido de números), devolverlo tal cual
+    if (/^C\d+$/.test(texto.trim())) {
+      return texto.trim();
+    }
+
+    // Buscar por término exacto
+    const conceptoPorTermino = conceptos.find(
+      c => c.termino_preferido.toLowerCase() === texto.toLowerCase().trim()
+    );
+    if (conceptoPorTermino) {
+      return conceptoPorTermino.id;
+    }
+
+    // Si no se encuentra, devolver el texto original (podría ser un concepto nuevo)
+    return texto.trim();
+  };
+
   // Cargar tesauro y conceptos modificados de localStorage
   useEffect(() => {
     const cargarTesauro = async () => {
@@ -154,10 +194,20 @@ export default function EditorTesauro({ onBack }: EditorTesauroProps) {
       return;
     }
 
+    // Convertir términos de las relaciones a IDs antes de guardar
+    const formDataConvertido: ConceptoModificado = {
+      ...formData,
+      relaciones: {
+        terminos_generales: (formData.relaciones?.terminos_generales || []).map(convertirAId),
+        terminos_especificos: (formData.relaciones?.terminos_especificos || []).map(convertirAId),
+        terminos_relacionados: (formData.relaciones?.terminos_relacionados || []).map(convertirAId)
+      }
+    };
+
     if (vista === "agregar") {
       // Agregar nuevo concepto
       const nuevoConcepto: ConceptoModificado = {
-        ...formData,
+        ...formDataConvertido,
         nuevo: true,
         modificado: false
       };
@@ -167,12 +217,12 @@ export default function EditorTesauro({ onBack }: EditorTesauroProps) {
     } else if (vista === "editar") {
       // Editar concepto existente
       const nuevosConceptos = conceptos.map(c =>
-        c.id === formData.id
-          ? { ...formData, modificado: !formData.nuevo, nuevo: formData.nuevo }
+        c.id === formDataConvertido.id
+          ? { ...formDataConvertido, modificado: !formDataConvertido.nuevo, nuevo: formDataConvertido.nuevo }
           : c
       );
       guardarModificaciones(nuevosConceptos);
-      alert(`✅ Concepto ${formData.id} actualizado exitosamente`);
+      alert(`✅ Concepto ${formDataConvertido.id} actualizado exitosamente`);
     }
 
     setVista("lista");
@@ -636,7 +686,7 @@ export default function EditorTesauro({ onBack }: EditorTesauroProps) {
                       Términos Generales:
                     </div>
                     {conceptoSeleccionado.relaciones.terminos_generales.map((t, idx) => (
-                      <div key={idx} style={{ fontSize: "14px", color: "#555", marginBottom: "4px" }}>• {t}</div>
+                      <div key={idx} style={{ fontSize: "14px", color: "#555", marginBottom: "4px" }}>• {formatearRelacion(t)}</div>
                     ))}
                   </div>
                 )}
@@ -646,7 +696,7 @@ export default function EditorTesauro({ onBack }: EditorTesauroProps) {
                       Términos Específicos:
                     </div>
                     {conceptoSeleccionado.relaciones.terminos_especificos.map((t, idx) => (
-                      <div key={idx} style={{ fontSize: "14px", color: "#555", marginBottom: "4px" }}>• {t}</div>
+                      <div key={idx} style={{ fontSize: "14px", color: "#555", marginBottom: "4px" }}>• {formatearRelacion(t)}</div>
                     ))}
                   </div>
                 )}
@@ -656,7 +706,7 @@ export default function EditorTesauro({ onBack }: EditorTesauroProps) {
                       Términos Relacionados:
                     </div>
                     {conceptoSeleccionado.relaciones.terminos_relacionados.map((t, idx) => (
-                      <div key={idx} style={{ fontSize: "14px", color: "#555", marginBottom: "4px" }}>• {t}</div>
+                      <div key={idx} style={{ fontSize: "14px", color: "#555", marginBottom: "4px" }}>• {formatearRelacion(t)}</div>
                     ))}
                   </div>
                 )}
@@ -876,17 +926,32 @@ export default function EditorTesauro({ onBack }: EditorTesauroProps) {
               padding: "20px",
               background: "#fafafa"
             }}>
-              <h3 style={{ fontSize: "18px", marginBottom: "15px", color: "#673ab7" }}>
+              <h3 style={{ fontSize: "18px", marginBottom: "10px", color: "#673ab7" }}>
                 Relaciones
               </h3>
+              <p style={{
+                fontSize: "12px",
+                color: "#666",
+                marginBottom: "15px",
+                padding: "8px",
+                background: "#fff3cd",
+                borderRadius: "4px",
+                border: "1px solid #ffc107"
+              }}>
+                💡 <strong>Tip:</strong> Escribí el término completo (ej: "Convenio Colectivo de Trabajo") o el ID (ej: "C001").
+                El sistema mostrará siempre el término legible.
+              </p>
 
               {/* Términos generales */}
               <div style={{ marginBottom: "15px" }}>
                 <label style={{ display: "block", fontWeight: "bold", marginBottom: "8px", fontSize: "14px" }}>
                   Términos Generales
+                  <span style={{ fontWeight: "normal", fontSize: "12px", color: "#999", marginLeft: "5px" }}>
+                    (conceptos más amplios)
+                  </span>
                 </label>
                 <textarea
-                  value={(formData.relaciones?.terminos_generales || []).join("\n")}
+                  value={(formData.relaciones?.terminos_generales || []).map(id => formatearRelacion(id)).join("\n")}
                   onChange={(e) => setFormData({
                     ...formData,
                     relaciones: {
@@ -894,7 +959,7 @@ export default function EditorTesauro({ onBack }: EditorTesauroProps) {
                       terminos_generales: e.target.value.split("\n").filter(t => t.trim())
                     }
                   })}
-                  placeholder="Un término por línea..."
+                  placeholder="Ej: Derecho Laboral&#10;Relaciones de trabajo&#10;Convenio Colectivo"
                   rows={2}
                   style={{
                     width: "100%",
@@ -911,9 +976,12 @@ export default function EditorTesauro({ onBack }: EditorTesauroProps) {
               <div style={{ marginBottom: "15px" }}>
                 <label style={{ display: "block", fontWeight: "bold", marginBottom: "8px", fontSize: "14px" }}>
                   Términos Específicos
+                  <span style={{ fontWeight: "normal", fontSize: "12px", color: "#999", marginLeft: "5px" }}>
+                    (conceptos más detallados)
+                  </span>
                 </label>
                 <textarea
-                  value={(formData.relaciones?.terminos_especificos || []).join("\n")}
+                  value={(formData.relaciones?.terminos_especificos || []).map(id => formatearRelacion(id)).join("\n")}
                   onChange={(e) => setFormData({
                     ...formData,
                     relaciones: {
@@ -921,7 +989,7 @@ export default function EditorTesauro({ onBack }: EditorTesauroProps) {
                       terminos_especificos: e.target.value.split("\n").filter(t => t.trim())
                     }
                   })}
-                  placeholder="Un término por línea..."
+                  placeholder="Ej: Horas extras&#10;Licencias por enfermedad&#10;Vacaciones anuales"
                   rows={2}
                   style={{
                     width: "100%",
@@ -938,9 +1006,12 @@ export default function EditorTesauro({ onBack }: EditorTesauroProps) {
               <div>
                 <label style={{ display: "block", fontWeight: "bold", marginBottom: "8px", fontSize: "14px" }}>
                   Términos Relacionados
+                  <span style={{ fontWeight: "normal", fontSize: "12px", color: "#999", marginLeft: "5px" }}>
+                    (conceptos asociados)
+                  </span>
                 </label>
                 <textarea
-                  value={(formData.relaciones?.terminos_relacionados || []).join("\n")}
+                  value={(formData.relaciones?.terminos_relacionados || []).map(id => formatearRelacion(id)).join("\n")}
                   onChange={(e) => setFormData({
                     ...formData,
                     relaciones: {
@@ -948,7 +1019,7 @@ export default function EditorTesauro({ onBack }: EditorTesauroProps) {
                       terminos_relacionados: e.target.value.split("\n").filter(t => t.trim())
                     }
                   })}
-                  placeholder="Un término por línea..."
+                  placeholder="Ej: Salario&#10;Jornada laboral&#10;Condiciones de trabajo"
                   rows={2}
                   style={{
                     width: "100%",
