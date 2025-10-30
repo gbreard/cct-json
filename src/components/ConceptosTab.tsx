@@ -20,7 +20,6 @@ export default function ConceptosTab() {
   const [filtro, setFiltro] = useState<FiltroValidacion>("todos");
   const [busqueda, setBusqueda] = useState("");
   const [conceptoSeleccionado, setConceptoSeleccionado] = useState<string | null>(null);
-  const [showAgregarConcepto, setShowAgregarConcepto] = useState(false);
   const [showCorregirModal, setShowCorregirModal] = useState<{ conceptoId: string; termino: string } | null>(null);
 
   // Cargar tesauro
@@ -88,8 +87,6 @@ export default function ConceptosTab() {
     if (filtro !== "todos") {
       filtered = filtered.filter(concepto => {
         // Buscar el concepto en los artículos para obtener su estado de validación
-        let estado: string | undefined;
-
         if (doc?.estructura.capitulos) {
           for (const cap of doc.estructura.capitulos) {
             for (const art of cap.articulos) {
