@@ -248,9 +248,9 @@ export default function EditorTesauroV2({ onBack, userName }: EditorTesauroV2Pro
       .sort((a, b) => a.termino_preferido.localeCompare(b.termino_preferido));
 
     return (
-      <div className="flex h-full">
+      <div className="flex min-h-full">
         {/* Índice alfabético */}
-        <div className="w-20 bg-gray-50 border-r border-gray-200 p-2 overflow-y-auto">
+        <div className="w-20 bg-gray-50 border-r border-gray-200 p-2 sticky top-0 self-start max-h-screen overflow-y-auto">
           <div className="text-xs font-semibold text-gray-500 mb-2">Letra</div>
           {letras.map((letra) => {
             const count = conceptos.filter(
@@ -276,7 +276,7 @@ export default function EditorTesauroV2({ onBack, userName }: EditorTesauroV2Pro
         </div>
 
         {/* Lista de conceptos */}
-        <div className="flex-1 p-6 overflow-y-auto">
+        <div className="flex-1 p-6">
           <h2 className="text-2xl font-bold mb-4">Conceptos con letra "{letraActual}"</h2>
 
           {conceptosPorLetra.length === 0 ? (
@@ -360,7 +360,7 @@ export default function EditorTesauroV2({ onBack, userName }: EditorTesauroV2Pro
     };
 
     return (
-      <div className="p-6 overflow-y-auto h-full">
+      <div className="p-6">
         <h2 className="text-2xl font-bold mb-4">Jerarquía de Conceptos</h2>
         <div className="bg-white border border-gray-200 rounded p-4">
           {raices.length === 0 ? (
@@ -389,7 +389,7 @@ export default function EditorTesauroV2({ onBack, userName }: EditorTesauroV2Pro
     ];
 
     return (
-      <div className="p-6 overflow-y-auto h-full">
+      <div className="p-6">
         {/* Breadcrumb / Navegación */}
         <div className="mb-4 flex items-center gap-2 text-sm">
           <button onClick={volverAtras} className="text-blue-600 hover:underline">
@@ -552,7 +552,7 @@ export default function EditorTesauroV2({ onBack, userName }: EditorTesauroV2Pro
   // ==================== VISTA DE BÚSQUEDA ====================
   const renderVistaBusqueda = () => {
     return (
-      <div className="p-6 overflow-y-auto h-full">
+      <div className="p-6">
         <h2 className="text-2xl font-bold mb-4">Búsqueda de Conceptos</h2>
 
         <div className="mb-6">
