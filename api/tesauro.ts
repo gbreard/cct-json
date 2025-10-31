@@ -164,18 +164,25 @@ async function handleGet(req: VercelRequest, res: VercelResponse, pk: string) {
     return res.status(200).json(result.Items[0]);
   }
 
-  // Obtener todos los conceptos
-  const command = new QueryCommand({
-    TableName: TABLE_NAME,
-    KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
-    ExpressionAttributeValues: {
-      ':pk': pk,
-      ':prefix': 'concept#',
-    },
-  });
+  // Obtener todos los conceptos con paginación
+  let conceptos: any[] = [];
+  let lastEvaluatedKey: any = undefined;
 
-  const result = await docClient.send(command);
-  let conceptos = result.Items || [];
+  do {
+    const command = new QueryCommand({
+      TableName: TABLE_NAME,
+      KeyConditionExpression: 'pk = :pk AND begins_with(sk, :prefix)',
+      ExpressionAttributeValues: {
+        ':pk': pk,
+        ':prefix': 'concept#',
+      },
+      ExclusiveStartKey: lastEvaluatedKey,
+    });
+
+    const result = await docClient.send(command);
+    conceptos = conceptos.concat(result.Items || []);
+    lastEvaluatedKey = result.LastEvaluatedKey;
+  } while (lastEvaluatedKey);
 
   // Filtrar por búsqueda (búsqueda fuzzy simple)
   if (search && typeof search === 'string') {
