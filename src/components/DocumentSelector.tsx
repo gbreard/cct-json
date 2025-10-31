@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import type { DocumentInfo, CCTDocument } from "../lib/types";
-import { getAutosaveData, getCloudAutosave } from "../hooks/useAutosave";
+import { getSavedData } from "../hooks/useAutosave";
 import { calculateProgress, getEstadoLabel, getEstadoColor, type ProgressStats } from "../lib/progressCalculator";
 
 interface DocumentSelectorProps {
@@ -167,34 +167,18 @@ export default function DocumentSelector({ onSelectDocument, categoryId, categor
         try {
           const baseFileName = doc.fileName.replace("_HIBRIDO.json", "");
 
-          // Intentar cargar desde local y cloud
-          const localData = getAutosaveData(baseFileName);
-          const cloudData = await getCloudAutosave(baseFileName);
+          // Intentar cargar desde servidor (ÚNICA FUENTE DE DATOS)
+          const savedData = await getSavedData(baseFileName);
 
-          // Elegir la versión más reciente
+          // Usar datos guardados si existen
           let documentData: CCTDocument | null = null;
           let lastEdited: Date | null = null;
           let editedBy: string | undefined = undefined;
 
-          if (localData && cloudData) {
-            const localTime = localData.timestamp ? new Date(localData.timestamp).getTime() : 0;
-            const cloudTime = cloudData.timestamp ? new Date(cloudData.timestamp).getTime() : 0;
-
-            if (localTime > cloudTime) {
-              documentData = localData.data;
-              lastEdited = localData.timestamp ? new Date(localData.timestamp) : null;
-            } else {
-              documentData = cloudData.data;
-              lastEdited = cloudData.timestamp ? new Date(cloudData.timestamp) : null;
-              editedBy = cloudData.userName;
-            }
-          } else if (cloudData) {
-            documentData = cloudData.data;
-            lastEdited = cloudData.timestamp ? new Date(cloudData.timestamp) : null;
-            editedBy = cloudData.userName;
-          } else if (localData) {
-            documentData = localData.data;
-            lastEdited = localData.timestamp ? new Date(localData.timestamp) : null;
+          if (savedData) {
+            documentData = savedData.data;
+            lastEdited = savedData.timestamp ? new Date(savedData.timestamp) : null;
+            editedBy = savedData.userName;
           }
 
           // Calcular progreso si hay datos

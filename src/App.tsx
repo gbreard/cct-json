@@ -13,7 +13,8 @@ import TesaurosHub, { type TesaurosView } from "./components/TesaurosHub";
 import EditorTesauro from "./components/EditorTesauro";
 import Resizer from "./components/Resizer";
 import { useDocStore } from "./state/useDocStore";
-import { useAutosave, getAutosaveData, getCloudAutosave } from "./hooks/useAutosave";
+import { useAutosave, getSavedData } from "./hooks/useAutosave";
+import { useLock } from "./hooks/useLock";
 import "./App.css";
 
 type NavigationLevel = "category" | "document" | "editor" | "tesauros" | "tesauros-view";
@@ -25,9 +26,16 @@ function App() {
   const [navigationLevel, setNavigationLevel] = useState<NavigationLevel>("category");
   const [selectedCategory, setSelectedCategory] = useState<{ id: string; name: string } | null>(null);
   const [selectedDocPath, setSelectedDocPath] = useState<string | null>(null);
+  const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [pdfSearchText, setPdfSearchText] = useState<string | undefined>(undefined);
-  const { lastSaved, syncStatus, lastCloudSync } = useAutosave(30000); // Autosave cada 30 segundos
+
+  // Sistema de locks
+  const userName = localStorage.getItem('userName') || 'Usuario';
+  const { lockInfo, hasLock, acquireLock, releaseLock } = useLock(selectedFileName, userName);
+
+  // Autosave (solo si tenemos el lock)
+  const { lastSaved, syncStatus } = useAutosave(30000, hasLock);
 
   // Estados para anchos de paneles redimensionables
   const [sidebarWidth, setSidebarWidth] = useState(300);
@@ -191,6 +199,7 @@ function App() {
     console.log("Intentando cargar documento:", filePath);
     setLoading(true);
     try {
+      // 1. Cargar el archivo JSON original
       console.log("Haciendo fetch a:", filePath);
       const res = await fetch(filePath);
       console.log("Respuesta fetch:", res.status, res.statusText);
@@ -201,83 +210,62 @@ function App() {
 
       const json = await res.json();
       console.log("JSON parseado correctamente:", json);
-      console.log("Metadata del documento:", json.metadata);
-      console.log("Estructura:", json.estructura);
 
       // Validar estructura básica
       if (!json.metadata || !json.estructura) {
         throw new Error("El documento no tiene la estructura esperada (falta metadata o estructura)");
       }
 
-      // Revisar AMBOS: autosave local Y cloud - ELEGIR EL MÁS RECIENTE
       const fileName = json.metadata.nombre_archivo;
-      const localData = getAutosaveData(fileName);
-      const cloudData = await getCloudAutosave(fileName);
+
+      // 2. Intentar adquirir lock ANTES de cargar
+      setSelectedFileName(fileName);
+
+      // Esperar un momento para que el hook useLock se actualice
+      await new Promise(resolve => setTimeout(resolve, 100));
+
+      const lockAcquired = await acquireLock();
+
+      if (!lockAcquired) {
+        setLoading(false);
+        alert(
+          `🔒 DOCUMENTO BLOQUEADO\n\n` +
+          `Este documento está siendo editado por: ${lockInfo.userName}\n\n` +
+          `No puedes abrirlo hasta que termine su edición.\n` +
+          `Por favor, intenta más tarde.`
+        );
+        setSelectedFileName(null);
+        return;
+      }
+
+      // 3. Lock adquirido exitosamente - cargar datos guardados o original
+      const savedData = await getSavedData(fileName);
 
       let documentToLoad = json;
-      let source = 'original';
       let notificationMessage = '';
 
-      // Comparar versiones
-      if (localData && cloudData) {
-        // Ambos existen - elegir el más reciente
-        const localTime = localData.timestamp ? new Date(localData.timestamp).getTime() : 0;
-        const cloudTime = cloudData.timestamp ? new Date(cloudData.timestamp).getTime() : 0;
+      if (savedData) {
+        // Hay una versión guardada en el servidor
+        documentToLoad = savedData.data;
+        const savedTime = savedData.timestamp ? new Date(savedData.timestamp).getTime() : new Date().getTime();
+        const timeAgo = Math.round((new Date().getTime() - savedTime) / 60000);
 
-        if (localTime > cloudTime) {
-          // Local más reciente
-          documentToLoad = localData.data;
-          source = 'local';
-          const timeAgo = Math.round((new Date().getTime() - localTime) / 60000);
-          notificationMessage =
-            `✅ Cargada versión LOCAL (más reciente)\n\n` +
-            `Tu versión local es más nueva que la del servidor.\n` +
-            `Guardada hace ${timeAgo} minuto${timeAgo !== 1 ? 's' : ''} en este navegador.\n\n` +
-            `Se sincronizará automáticamente al servidor cada 30 segundos.`;
-        } else {
-          // Cloud más reciente
-          documentToLoad = cloudData.data;
-          source = 'cloud';
-          const timeAgo = Math.round((new Date().getTime() - cloudTime) / 60000);
-          notificationMessage =
-            `☁️ Cargada versión del SERVIDOR (más reciente)\n\n` +
-            `Última edición: ${cloudData.userName || 'Usuario'}\n` +
-            `Hace ${timeAgo} minuto${timeAgo !== 1 ? 's' : ''}.\n\n` +
-            `Esta versión fue guardada desde otra PC o usuario.\n` +
-            `Tus cambios se sincronizarán automáticamente cada 30 segundos.`;
-        }
-      } else if (cloudData) {
-        // Solo existe en cloud
-        documentToLoad = cloudData.data;
-        source = 'cloud';
-        const cloudTime = cloudData.timestamp ? new Date(cloudData.timestamp).getTime() : new Date().getTime();
-        const timeAgo = Math.round((new Date().getTime() - cloudTime) / 60000);
         notificationMessage =
-          `☁️ Cargada versión del SERVIDOR\n\n` +
-          `Última edición: ${cloudData.userName || 'Usuario'}\n` +
+          `💾 Cargada versión guardada del SERVIDOR\n\n` +
+          `Última edición: ${savedData.userName || 'Usuario'}\n` +
           `Hace ${timeAgo} minuto${timeAgo !== 1 ? 's' : ''}.\n\n` +
-          `No había versión local en este navegador.\n` +
-          `Ahora puedes continuar editando y se guardará automáticamente.`;
-      } else if (localData) {
-        // Solo existe local
-        documentToLoad = localData.data;
-        source = 'local';
-        const localTime = localData.timestamp ? new Date(localData.timestamp).getTime() : new Date().getTime();
-        const timeAgo = Math.round((new Date().getTime() - localTime) / 60000);
-        notificationMessage =
-          `✅ Cargada versión LOCAL\n\n` +
-          `Guardada hace ${timeAgo} minuto${timeAgo !== 1 ? 's' : ''} en este navegador.\n\n` +
-          `No se encontró versión en el servidor.\n` +
-          `Se sincronizará automáticamente cada 30 segundos.`;
+          `✅ Tienes el control exclusivo de este documento.\n` +
+          `Se guardará automáticamente en el servidor cada 30 segundos.`;
       } else {
-        // No hay ninguna versión guardada - usar original
+        // No hay versión guardada - usar original
         notificationMessage =
           `📄 Cargada versión ORIGINAL del servidor\n\n` +
-          `No se encontraron cambios previos guardados.\n` +
+          `No se encontraron cambios previos guardados.\n\n` +
+          `✅ Tienes el control exclusivo de este documento.\n` +
           `El guardado automático comenzará en 30 segundos.`;
       }
 
-      console.log(`📂 Documento cargado desde: ${source}`);
+      console.log(`📂 Documento cargado y bloqueado exitosamente`);
       if (notificationMessage) {
         setTimeout(() => alert(notificationMessage), 500);
       }
@@ -298,12 +286,14 @@ function App() {
       setLoading(false);
       setDoc(null);
       setSelectedDocPath(null);
+      setSelectedFileName(null);
+      await releaseLock(); // Liberar lock si hubo error
     } finally {
       setLoading(false);
     }
   };
 
-  const handleBackToDocumentSelector = () => {
+  const handleBackToDocumentSelector = async () => {
     // Advertencia fuerte y clara sobre el estado del documento
     let message = "⚠️ ¿VOLVER AL SELECTOR DE DOCUMENTOS?\n\n";
 
@@ -312,8 +302,9 @@ function App() {
       message +=
         `✅ TUS CAMBIOS ESTÁN SEGUROS:\n` +
         `• Último guardado automático: hace ${minutosDesdeGuardado} minuto${minutosDesdeGuardado !== 1 ? 's' : ''}\n` +
-        `• El respaldo se mantiene en el navegador\n` +
+        `• Guardado en el servidor (base de datos)\n` +
         `• Al volver a abrir este documento, continuarás donde quedaste\n\n` +
+        `Al salir, otros usuarios podrán editar este documento.\n\n` +
         `Recordá descargar el archivo final cuando termines de revisar todo el CCT.`;
     } else {
       message +=
@@ -324,9 +315,13 @@ function App() {
     }
 
     if (confirm(message)) {
+      // Liberar el lock antes de salir
+      await releaseLock();
+
       setDoc(null);
       setOriginal(null);
       setSelectedDocPath(null);
+      setSelectedFileName(null);
       setNavigationLevel("document");
     }
   };
@@ -448,7 +443,8 @@ function App() {
         onSave={handleSave}
         lastSaved={lastSaved}
         syncStatus={syncStatus}
-        lastCloudSync={lastCloudSync}
+        hasLock={hasLock}
+        lockInfo={lockInfo}
       />
 
       <div style={{
