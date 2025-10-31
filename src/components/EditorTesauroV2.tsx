@@ -101,10 +101,50 @@ export default function EditorTesauroV2({ onBack, userName }: EditorTesauroV2Pro
     setError(null);
 
     try {
+      // Intentar cargar desde API (producción)
       const res = await fetch("/api/tesauro?version=v1");
 
-      if (!res.ok) {
-        throw new Error(`Error ${res.status}: ${res.statusText}`);
+      // Si falla o retorna HTML/JS (desarrollo local), usar JSON local
+      const contentType = res.headers.get("content-type");
+      if (!res.ok || !contentType?.includes("application/json")) {
+        console.log("API no disponible, cargando desde JSON local...");
+
+        // Cargar desde JSON local
+        const resLocal = await fetch("/tesauro_convenios_colectivos.json");
+        const tesauroLocal = await resLocal.json();
+
+        // Convertir al formato enriquecido
+        const conceptosLocal = tesauroLocal.tesauro.conceptos.map((c: any) => ({
+          ...c,
+          categorias: c.categorias || [],
+          etiquetas: [],
+          sector_aplicacion: "general",
+          marco_legal: { leyes: [], jurisprudencia: [] },
+          relaciones: {
+            ...c.relaciones,
+            es_parte_de: [],
+            tiene_partes: [],
+            causa: [],
+            es_causado_por: [],
+            precede_a: [],
+            sigue_a: [],
+            regulado_por: [],
+            regula_a: [],
+            requiere: [],
+            es_requerido_por: [],
+            similar_a: [],
+            opuesto_a: [],
+          },
+          es_cuantificable: false,
+          version: 1,
+          fecha_creacion: new Date().toISOString(),
+          fecha_modificacion: new Date().toISOString(),
+          modificado_por: "local",
+          estado: "activo",
+        }));
+
+        setConceptos(conceptosLocal);
+        return;
       }
 
       const data = await res.json();
