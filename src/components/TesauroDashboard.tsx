@@ -24,39 +24,21 @@ interface DashboardData {
   categoriasMasUsadas: Array<{ categoria: string; count: number }>;
 }
 
-export default function TesauroDashboard() {
+interface TesauroDashboardProps {
+  conceptos: any[];
+}
+
+export default function TesauroDashboard({ conceptos }: TesauroDashboardProps) {
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    cargarDatos();
-  }, []);
-
-  const cargarDatos = async () => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      const res = await fetch("/api/tesauro?version=v1");
-
-      if (!res.ok) {
-        throw new Error("Error cargando datos");
-      }
-
-      const response = await res.json();
-      const conceptos = response.conceptos || [];
-
-      // Calcular estadísticas
+    if (conceptos && conceptos.length > 0) {
       const stats = calcularEstadisticas(conceptos);
       setData(stats);
-    } catch (err) {
-      console.error("Error:", err);
-      setError(err instanceof Error ? err.message : "Error desconocido");
-    } finally {
       setLoading(false);
     }
-  };
+  }, [conceptos]);
 
   const calcularEstadisticas = (conceptos: any[]): DashboardData => {
     const totalConceptos = conceptos.length;
@@ -139,27 +121,10 @@ export default function TesauroDashboard() {
     };
   };
 
-  if (loading) {
+  if (loading || !data) {
     return (
       <div className="flex items-center justify-center h-screen">
-        <p className="text-gray-500">Cargando estadísticas...</p>
-      </div>
-    );
-  }
-
-  if (error || !data) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-          <p className="text-red-800 font-semibold">Error:</p>
-          <p className="text-red-600">{error || "No hay datos disponibles"}</p>
-          <button
-            onClick={cargarDatos}
-            className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-          >
-            Reintentar
-          </button>
-        </div>
+        <p className="text-gray-500">Calculando estadísticas...</p>
       </div>
     );
   }

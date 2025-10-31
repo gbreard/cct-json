@@ -63,7 +63,7 @@ interface ConceptoEnriquecido {
   _matchScore?: number;
 }
 
-type VistaMode = "alfabetica" | "jerarquica" | "grafo" | "concepto" | "busqueda" | "dashboard" | "migrar";
+type VistaMode = "alfabetica" | "jerarquica" | "grafo" | "concepto" | "busqueda" | "dashboard";
 
 interface EditorTesauroV2Props {
   onBack: () => void;
@@ -251,7 +251,7 @@ export default function EditorTesauroV2({ onBack, userName }: EditorTesauroV2Pro
       <div className="flex h-full">
         {/* Índice alfabético */}
         <div className="w-20 bg-gray-50 border-r border-gray-200 p-2 overflow-y-auto">
-          <div className="text-xs font-semibold text-gray-500 mb-2">Índice</div>
+          <div className="text-xs font-semibold text-gray-500 mb-2">Letra</div>
           {letras.map((letra) => {
             const count = conceptos.filter(
               (c) => c.estado === "activo" && c.termino_preferido[0].toUpperCase() === letra
@@ -350,7 +350,6 @@ export default function EditorTesauroV2({ onBack, userName }: EditorTesauroV2Pro
               className="flex-1 text-left px-2 py-1 hover:bg-blue-50 rounded"
             >
               <span className="text-blue-600 font-medium">{concepto.termino_preferido}</span>
-              <span className="text-xs text-gray-500 ml-2">({concepto.id})</span>
             </button>
           </div>
           {expandido && tieneHijos && (
@@ -617,87 +616,6 @@ export default function EditorTesauroV2({ onBack, userName }: EditorTesauroV2Pro
     );
   };
 
-  // ==================== VISTA DE MIGRACIÓN ====================
-  const renderVistaMigrar = () => {
-    const [migrando, setMigrando] = useState(false);
-    const [resultado, setResultado] = useState<any>(null);
-
-    const handleMigrar = async () => {
-      if (!confirm("¿Migrar el tesauro actual a DynamoDB? Esto puede tomar varios minutos.")) {
-        return;
-      }
-
-      setMigrando(true);
-      setResultado(null);
-
-      try {
-        // Cargar JSON original
-        const resJson = await fetch("/tesauro_convenios_colectivos.json");
-        const tesauroJson = await resJson.json();
-
-        // Enviar a API de migración
-        const resMigrar = await fetch("/api/tesauro-migrate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            tesauro: tesauroJson,
-            targetVersion: "v1",
-            dryRun: false,
-          }),
-        });
-
-        const data = await resMigrar.json();
-        setResultado(data);
-
-        if (data.ok) {
-          alert("✅ Migración completada exitosamente!");
-          // Recargar conceptos
-          await cargarConceptos();
-        } else {
-          alert(`❌ Error en migración: ${data.message || "Error desconocido"}`);
-        }
-      } catch (err) {
-        console.error("Error en migración:", err);
-        alert(`❌ Error: ${err instanceof Error ? err.message : "Error desconocido"}`);
-      } finally {
-        setMigrando(false);
-      }
-    };
-
-    return (
-      <div className="p-6 overflow-y-auto h-full">
-        <h2 className="text-2xl font-bold mb-4">Migrar Tesauro a DynamoDB</h2>
-
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-6">
-          <p className="font-semibold mb-2">⚠️ Importante:</p>
-          <ul className="list-disc list-inside space-y-1 text-sm">
-            <li>Este proceso migra el tesauro del JSON a DynamoDB</li>
-            <li>Los conceptos serán enriquecidos automáticamente con categorías y metadatos</li>
-            <li>Puede tomar varios minutos para 4600+ conceptos</li>
-            <li>Los datos existentes en DynamoDB serán sobrescritos</li>
-          </ul>
-        </div>
-
-        <button
-          onClick={handleMigrar}
-          disabled={migrando}
-          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400"
-        >
-          {migrando ? "Migrando..." : "Iniciar Migración"}
-        </button>
-
-        {resultado && (
-          <div className="mt-6 bg-white border border-gray-200 rounded-lg p-6">
-            <h3 className="font-bold mb-2">Resultado de la migración:</h3>
-            <pre className="text-sm bg-gray-50 p-4 rounded overflow-auto">
-              {JSON.stringify(resultado, null, 2)}
-            </pre>
-          </div>
-        )}
-      </div>
-    );
-  };
-
   // ==================== RENDER PRINCIPAL ====================
   return (
     <div className="h-screen flex flex-col">
@@ -759,18 +677,10 @@ export default function EditorTesauroV2({ onBack, userName }: EditorTesauroV2Pro
         >
           📊 Dashboard
         </button>
-        <button
-          onClick={() => setModo("migrar")}
-          className={`px-4 py-2 rounded ${
-            modo === "migrar" ? "bg-blue-600 text-white" : "bg-white hover:bg-gray-200"
-          }`}
-        >
-          🔄 Migrar
-        </button>
       </div>
 
       {/* Contenido principal */}
-      <div className="flex-1 overflow-hidden bg-gray-50">
+      <div className="flex-1 overflow-auto bg-gray-50">
         {loading && !conceptoActual && (
           <div className="flex items-center justify-center h-full">
             <p className="text-gray-500">Cargando...</p>
@@ -806,8 +716,7 @@ export default function EditorTesauroV2({ onBack, userName }: EditorTesauroV2Pro
             )}
             {modo === "concepto" && renderVistaConcepto()}
             {modo === "busqueda" && renderVistaBusqueda()}
-            {modo === "dashboard" && <TesauroDashboard />}
-            {modo === "migrar" && renderVistaMigrar()}
+            {modo === "dashboard" && <TesauroDashboard conceptos={conceptos} />}
           </>
         )}
       </div>
