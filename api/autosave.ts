@@ -54,7 +54,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const autosaveData = await kv.get<AutosaveData>(key);
 
       if (!autosaveData) {
-        return res.status(404).json({ error: 'No autosave found for this document' });
+        // Devolver 200 con null en lugar de 404 para evitar errores en consola
+        return res.status(200).json({ data: null, timestamp: null, userName: null });
       }
 
       return res.status(200).json(autosaveData);

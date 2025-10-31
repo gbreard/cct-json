@@ -68,13 +68,16 @@ export async function getSavedData(fileName: string) {
     const response = await fetch(`/api/autosave?fileName=${encodeURIComponent(fileName)}`);
 
     if (!response.ok) {
-      if (response.status === 404) {
-        return null; // No hay datos guardados para este documento
-      }
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
 
     const result = await response.json();
+
+    // Si data es null, significa que no hay datos guardados
+    if (!result.data) {
+      return null;
+    }
+
     return {
       data: result.data,
       timestamp: result.timestamp ? new Date(result.timestamp) : null,
