@@ -12,6 +12,7 @@ import DocumentSelector from "./components/DocumentSelector";
 import TesaurosHub, { type TesaurosView } from "./components/TesaurosHub";
 import EditorTesauro from "./components/EditorTesauro";
 import Resizer from "./components/Resizer";
+import AdminPanel from "./components/AdminPanel";
 import { useDocStore } from "./state/useDocStore";
 import { useAutosave, getSavedData } from "./hooks/useAutosave";
 import { useLock } from "./hooks/useLock";
@@ -372,7 +373,12 @@ function App() {
 
   // Vista 1: Selector de categorías
   if (navigationLevel === "category") {
-    return <CategorySelector onSelectCategory={handleSelectCategory} onSelectTesauros={handleSelectTesauros} />;
+    return (
+      <>
+        <CategorySelector onSelectCategory={handleSelectCategory} onSelectTesauros={handleSelectTesauros} />
+        <AdminPanel />
+      </>
+    );
   }
 
   // Vista Tesauros Hub
@@ -408,13 +414,16 @@ function App() {
     }
 
     return (
-      <DocumentSelector
-        onSelectDocument={handleSelectDocument}
-        categoryId={selectedCategory?.id}
-        categoryName={selectedCategory?.name}
-        onBack={handleBackToCategories}
-        isValidationMode={isValidationMode}
-      />
+      <>
+        <DocumentSelector
+          onSelectDocument={handleSelectDocument}
+          categoryId={selectedCategory?.id}
+          categoryName={selectedCategory?.name}
+          onBack={handleBackToCategories}
+          isValidationMode={isValidationMode}
+        />
+        <AdminPanel />
+      </>
     );
   }
 
