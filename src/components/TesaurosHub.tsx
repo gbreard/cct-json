@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export type TesaurosView = "validar" | "editor" | "descargar";
+export type TesaurosView = "validar" | "editor" | "editor-v2" | "descargar";
 
 interface TesaurosHubProps {
   onSelectView: (view: TesaurosView) => void;
@@ -24,10 +24,18 @@ export default function TesaurosHub({ onSelectView, onBack }: TesaurosHubProps) 
     {
       id: "editor" as TesaurosView,
       icon: "📚",
-      title: "Editor de Tesauro",
-      description: "Agrega, edita y gestiona conceptos del diccionario",
-      longDescription: "Gestiona el diccionario de conceptos de forma independiente. Agrega nuevos términos, edita definiciones, establece relaciones y gestiona sinónimos sin necesidad de trabajar con documentos CCT.",
+      title: "Editor de Tesauro (V1)",
+      description: "Agrega, edita y gestiona conceptos del diccionario (LocalStorage)",
+      longDescription: "Gestiona el diccionario de conceptos de forma independiente. Agrega nuevos términos, edita definiciones, establece relaciones y gestiona sinónimos sin necesidad de trabajar con documentos CCT. Usa LocalStorage.",
       color: "#4caf50"
+    },
+    {
+      id: "editor-v2" as TesaurosView,
+      icon: "🚀",
+      title: "Editor de Tesauro V2 (NUEVO)",
+      description: "Interfaz mejorada con búsqueda fuzzy, vistas alfabéticas y jerárquicas",
+      longDescription: "Nueva interfaz siguiendo estándares SKOS y mejores prácticas UX. Incluye búsqueda fuzzy, autocompletado, visualización alfabética y jerárquica, 10+ tipos de relaciones semánticas, y almacenamiento en DynamoDB.",
+      color: "#9c27b0"
     },
     {
       id: "descargar" as TesaurosView,

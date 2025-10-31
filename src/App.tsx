@@ -11,6 +11,7 @@ import CategorySelector from "./components/CategorySelector";
 import DocumentSelector from "./components/DocumentSelector";
 import TesaurosHub, { type TesaurosView } from "./components/TesaurosHub";
 import EditorTesauro from "./components/EditorTesauro";
+import EditorTesauroV2 from "./components/EditorTesauroV2";
 import Resizer from "./components/Resizer";
 import AdminPanel from "./components/AdminPanel";
 import { useDocStore } from "./state/useDocStore";
@@ -388,6 +389,9 @@ function App() {
   if (navigationLevel === "tesauros-view") {
     if (activeTesaurosView === "editor") {
       return <EditorTesauro onBack={handleBackToTesaurosHub} />;
+    }
+    if (activeTesaurosView === "editor-v2") {
+      return <EditorTesauroV2 onBack={handleBackToTesaurosHub} userName={userName} />;
     }
     return null;
   }
