@@ -269,7 +269,6 @@ export default function EditorTesauroV2({ onBack, userName }: EditorTesauroV2Pro
                 `}
               >
                 {letra}
-                {count > 0 && <span className="text-xs ml-1">({count})</span>}
               </button>
             );
           })}
