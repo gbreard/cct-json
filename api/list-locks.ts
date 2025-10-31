@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { scanByPrefix } from './lib/dynamodb';
+import { scanByPrefix } from './lib/dynamodb.js';
 
 interface LockData {
   userName: string;

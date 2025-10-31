@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { scanByPrefix, deleteItem } from './lib/dynamodb';
+import { scanByPrefix, deleteItem } from './lib/dynamodb.js';
 
 /**
  * ADMIN ENDPOINT: Limpia todos los locks de documentos

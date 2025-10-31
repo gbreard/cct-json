@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getItem, putItem } from './lib/dynamodb';
+import { getItem, putItem } from './lib/dynamodb.js';
 
 interface AutosaveData {
   data: any;

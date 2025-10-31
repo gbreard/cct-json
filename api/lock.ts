@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { getItem, putItem, deleteItem } from './lib/dynamodb';
+import { getItem, putItem, deleteItem } from './lib/dynamodb.js';
 
 interface LockData {
   userName: string;
