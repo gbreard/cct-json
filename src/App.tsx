@@ -155,8 +155,8 @@ function App() {
       });
       setActiveTab("conceptos");
       setNavigationLevel("document");
-    } else if (view === "editor") {
-      // Ir al editor de tesauro
+    } else if (view === "editor" || view === "editor-v2") {
+      // Ir al editor de tesauro (V1 o V2)
       setNavigationLevel("tesauros-view");
     } else if (view === "descargar") {
       // Descargar tesauro directamente
