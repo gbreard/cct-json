@@ -617,7 +617,7 @@ export default function EditorTesauroV2({ onBack, userName }: EditorTesauroV2Pro
 
   // ==================== RENDER PRINCIPAL ====================
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="h-screen flex flex-col">
       {/* Header */}
       <div className="bg-gray-800 text-white p-4 flex items-center justify-between">
         <div>
