@@ -52,7 +52,12 @@ export function useLock(fileName: string | null, userName: string) {
 
   // Adquirir lock
   const acquireLock = useCallback(async (): Promise<boolean> => {
-    if (!fileName) return false;
+    if (!fileName) {
+      console.log('❌ acquireLock: fileName is null');
+      return false;
+    }
+
+    console.log('🔒 Intentando adquirir lock para:', fileName, 'userName:', userName);
 
     try {
       const response = await fetch(`/api/lock?fileName=${encodeURIComponent(fileName)}`, {
@@ -65,7 +70,10 @@ export function useLock(fileName: string | null, userName: string) {
         })
       });
 
+      console.log('📡 Respuesta del servidor:', response.status, response.statusText);
+
       const data = await response.json();
+      console.log('📦 Datos recibidos:', data);
 
       if (response.status === 423) {
         // 423 Locked - documento ya está bloqueado
