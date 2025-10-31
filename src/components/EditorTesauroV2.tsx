@@ -275,7 +275,7 @@ export default function EditorTesauroV2({ onBack, userName }: EditorTesauroV2Pro
         </div>
 
         {/* Lista de conceptos */}
-        <div className="flex-1 p-6">
+        <div className="flex-1 p-6 overflow-y-auto">
           <h2 className="text-2xl font-bold mb-4">Conceptos con letra "{letraActual}"</h2>
 
           {conceptosPorLetra.length === 0 ? (
@@ -621,7 +621,7 @@ export default function EditorTesauroV2({ onBack, userName }: EditorTesauroV2Pro
       {/* Header */}
       <div className="bg-gray-800 text-white p-4 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Tesauro de CCT - Editor V2 - SCROLL ARREGLADO ✅</h1>
+          <h1 className="text-2xl font-bold">Tesauro de CCT - V2.1 ✅ SCROLL + DASHBOARD</h1>
           <p className="text-sm text-gray-300">
             {conceptos.length} conceptos activos | Usuario: {userName}
           </p>
