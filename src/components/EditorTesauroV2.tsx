@@ -248,9 +248,9 @@ export default function EditorTesauroV2({ onBack, userName }: EditorTesauroV2Pro
       .sort((a, b) => a.termino_preferido.localeCompare(b.termino_preferido));
 
     return (
-      <div className="flex">
+      <div className="flex h-full">
         {/* Índice alfabético */}
-        <div className="w-20 bg-gray-50 border-r border-gray-200 p-2 sticky top-0 h-screen overflow-y-auto">
+        <div className="w-20 bg-gray-50 border-r border-gray-200 p-2 sticky top-0 self-start overflow-y-auto" style={{maxHeight: '100vh'}}>
           <div className="text-xs font-semibold text-gray-500 mb-2">Letra</div>
           {letras.map((letra) => {
             const count = conceptos.filter(
@@ -621,7 +621,7 @@ export default function EditorTesauroV2({ onBack, userName }: EditorTesauroV2Pro
       {/* Header */}
       <div className="bg-gray-800 text-white p-4 flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Tesauro de CCT - Editor V2</h1>
+          <h1 className="text-2xl font-bold">Tesauro de CCT - Editor V2 - SCROLL ARREGLADO ✅</h1>
           <p className="text-sm text-gray-300">
             {conceptos.length} conceptos activos | Usuario: {userName}
           </p>
