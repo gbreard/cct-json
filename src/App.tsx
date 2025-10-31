@@ -222,10 +222,8 @@ function App() {
       // 2. Intentar adquirir lock ANTES de cargar
       setSelectedFileName(fileName);
 
-      // Esperar un momento para que el hook useLock se actualice
-      await new Promise(resolve => setTimeout(resolve, 100));
-
-      const lockAcquired = await acquireLock();
+      // Adquirir lock pasando fileName directamente
+      const lockAcquired = await acquireLock(fileName);
 
       if (!lockAcquired) {
         setLoading(false);

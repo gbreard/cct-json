@@ -51,16 +51,18 @@ export function useLock(fileName: string | null, userName: string) {
   }, [fileName]);
 
   // Adquirir lock
-  const acquireLock = useCallback(async (): Promise<boolean> => {
-    if (!fileName) {
+  const acquireLock = useCallback(async (targetFileName?: string): Promise<boolean> => {
+    const fileToLock = targetFileName || fileName;
+
+    if (!fileToLock) {
       console.log('❌ acquireLock: fileName is null');
       return false;
     }
 
-    console.log('🔒 Intentando adquirir lock para:', fileName, 'userName:', userName);
+    console.log('🔒 Intentando adquirir lock para:', fileToLock, 'userName:', userName);
 
     try {
-      const response = await fetch(`/api/lock?fileName=${encodeURIComponent(fileName)}`, {
+      const response = await fetch(`/api/lock?fileName=${encodeURIComponent(fileToLock)}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
