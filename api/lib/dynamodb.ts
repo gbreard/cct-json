@@ -11,7 +11,12 @@ const client = new DynamoDBClient({
 });
 
 // Crear cliente de documentos (facilita trabajar con objetos JS)
-export const docClient = DynamoDBDocumentClient.from(client);
+// Con removeUndefinedValues para evitar errores con valores undefined
+export const docClient = DynamoDBDocumentClient.from(client, {
+  marshallOptions: {
+    removeUndefinedValues: true,
+  },
+});
 
 // Nombre de la tabla
 export const TABLE_NAME = "cct-editor-data";
