@@ -1,5 +1,5 @@
-import { kv } from '@vercel/kv';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { scanByPrefix } from './lib/dynamodb';
 
 interface LockData {
   userName: string;
@@ -23,19 +23,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    // Usar scan en lugar de keys para mayor confiabilidad
-    let cursor: string | number = 0;
-    const allKeys: string[] = [];
+    // Obtener todos los items que empiezan con "lock#"
+    const items = await scanByPrefix('lock#');
 
-    // Iterar usando SCAN para obtener todas las keys
-    do {
-      const result = await kv.scan(cursor, { match: 'lock:*', count: 100 });
-      cursor = result[0];
-      const keys = result[1];
-      allKeys.push(...keys);
-    } while (cursor !== 0 && cursor !== '0');
-
-    if (allKeys.length === 0) {
+    if (items.length === 0) {
       return res.status(200).json({
         count: 0,
         locks: [],
@@ -43,21 +34,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
     }
 
-    // Obtener los datos de cada lock
-    const lockPromises = allKeys.map(async (key) => {
-      const lockData = await kv.get<LockData>(key);
-      return {
-        key,
-        fileName: key.replace('lock:', ''),
-        ...lockData
-      };
-    });
-
-    const locks = await Promise.all(lockPromises);
+    // Mapear los items a formato de respuesta
+    const locks = items.map(item => ({
+      key: item.pk,
+      fileName: item.pk.replace('lock#', ''),
+      userName: item.userName,
+      timestamp: item.timestamp,
+      lastHeartbeat: item.lastHeartbeat,
+      sessionId: item.sessionId
+    }));
 
     return res.status(200).json({
       count: locks.length,
-      locks: locks.filter(lock => lock.userName), // Filtrar locks inválidos
+      locks,
       message: `${locks.length} lock(s) activo(s)`
     });
   } catch (error) {

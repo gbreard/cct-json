@@ -1,5 +1,5 @@
-import { kv } from '@vercel/kv';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { scanByPrefix, deleteItem } from './lib/dynamodb';
 
 /**
  * ADMIN ENDPOINT: Limpia todos los locks de documentos
@@ -23,21 +23,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    // Usar scan en lugar de keys para mayor confiabilidad
-    let cursor: string | number = 0;
-    const allKeys: string[] = [];
+    // Obtener todos los items que empiezan con "lock#"
+    const items = await scanByPrefix('lock#');
 
-    // Iterar usando SCAN para obtener todas las keys
-    do {
-      const result = await kv.scan(cursor, { match: 'lock:*', count: 100 });
-      cursor = result[0];
-      const keys = result[1];
-      allKeys.push(...keys);
-    } while (cursor !== 0 && cursor !== '0');
+    console.log(`[ADMIN] Found ${items.length} locks to clear:`, items.map(i => i.pk));
 
-    console.log(`[ADMIN] Found ${allKeys.length} locks to clear:`, allKeys);
-
-    if (allKeys.length === 0) {
+    if (items.length === 0) {
       return res.status(200).json({
         ok: true,
         message: 'No hay locks para limpiar',
@@ -45,27 +36,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
     }
 
-    // Eliminar todos los locks uno por uno con logging
+    // Eliminar todos los locks uno por uno
     let deletedCount = 0;
-    for (const key of allKeys) {
+    for (const item of items) {
       try {
-        const deleted = await kv.del(key);
-        if (deleted) {
-          deletedCount++;
-          console.log(`[ADMIN] Deleted lock: ${key}`);
-        }
+        await deleteItem(item.pk, item.sk);
+        deletedCount++;
+        console.log(`[ADMIN] Deleted lock: ${item.pk}`);
       } catch (err) {
-        console.error(`[ADMIN] Error deleting ${key}:`, err);
+        console.error(`[ADMIN] Error deleting ${item.pk}:`, err);
       }
     }
 
-    console.log(`[ADMIN] Successfully deleted ${deletedCount}/${allKeys.length} locks`);
+    console.log(`[ADMIN] Successfully deleted ${deletedCount}/${items.length} locks`);
 
     return res.status(200).json({
       ok: true,
       message: `${deletedCount} lock(s) eliminado(s) exitosamente`,
       locksRemoved: deletedCount,
-      removedKeys: allKeys
+      removedKeys: items.map(i => i.pk)
     });
   } catch (error) {
     console.error('[ADMIN] Error clearing locks:', error);

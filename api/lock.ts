@@ -1,5 +1,5 @@
-import { kv } from '@vercel/kv';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { getItem, putItem, deleteItem } from './lib/dynamodb';
 
 interface LockData {
   userName: string;
@@ -28,15 +28,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: 'fileName is required' });
     }
 
-    const key = `lock:${fileName}`;
+    const pk = `lock#${fileName}`;
+    const sk = 'metadata';
 
     if (req.method === 'GET') {
       // Verificar si hay un lock activo
-      const lockData = await kv.get<LockData>(key);
+      const item = await getItem(pk, sk);
 
-      if (!lockData) {
+      if (!item) {
         return res.status(200).json({ locked: false });
       }
+
+      const lockData = item as LockData;
 
       // Verificar si el lock expiró
       const lastHeartbeat = new Date(lockData.lastHeartbeat).getTime();
@@ -45,7 +48,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
       if (isExpired) {
         // Lock expirado, eliminarlo
-        await kv.del(key);
+        await deleteItem(pk, sk);
         return res.status(200).json({ locked: false, wasExpired: true });
       }
 
@@ -66,7 +69,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
 
       // Verificar si ya existe un lock
-      const existingLock = await kv.get<LockData>(key);
+      const existingItem = await getItem(pk, sk);
+      const existingLock = existingItem as LockData | undefined;
 
       if (action === 'heartbeat') {
         // Renovar lock existente (heartbeat)
@@ -84,7 +88,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           lastHeartbeat: new Date().toISOString()
         };
 
-        await kv.set(key, updatedLock);
+        await putItem(pk, sk, updatedLock);
 
         return res.status(200).json({
           ok: true,
@@ -123,7 +127,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           lastHeartbeat: new Date().toISOString()
         };
 
-        await kv.set(key, newLock);
+        await putItem(pk, sk, newLock);
 
         return res.status(200).json({
           ok: true,
@@ -145,7 +149,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(400).json({ error: 'sessionId is required' });
       }
 
-      const existingLock = await kv.get<LockData>(key);
+      const existingItem = await getItem(pk, sk);
+      const existingLock = existingItem as LockData | undefined;
 
       if (!existingLock) {
         return res.status(200).json({ ok: true, message: 'No lock to release' });
@@ -156,7 +161,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(403).json({ error: 'Cannot release lock owned by another session' });
       }
 
-      await kv.del(key);
+      await deleteItem(pk, sk);
 
       return res.status(200).json({
         ok: true,

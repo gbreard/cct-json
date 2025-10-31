@@ -1,5 +1,5 @@
-import { kv } from '@vercel/kv';
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { getItem, putItem } from './lib/dynamodb';
 
 interface AutosaveData {
   data: any;
@@ -26,14 +26,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(400).json({ error: 'fileName and data are required' });
       }
 
+      const pk = `autosave#${fileName}`;
+      const sk = 'metadata';
+
       const autosaveData: AutosaveData = {
         data,
         userName: userName || 'Usuario',
         timestamp: new Date().toISOString(),
       };
 
-      const key = `autosave:${fileName}`;
-      await kv.set(key, autosaveData);
+      await putItem(pk, sk, autosaveData);
 
       return res.status(200).json({
         ok: true,
@@ -50,15 +52,23 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(400).json({ error: 'fileName is required' });
       }
 
-      const key = `autosave:${fileName}`;
-      const autosaveData = await kv.get<AutosaveData>(key);
+      const pk = `autosave#${fileName}`;
+      const sk = 'metadata';
 
-      if (!autosaveData) {
+      const item = await getItem(pk, sk);
+
+      if (!item) {
         // Devolver 200 con null en lugar de 404 para evitar errores en consola
         return res.status(200).json({ data: null, timestamp: null, userName: null });
       }
 
-      return res.status(200).json(autosaveData);
+      const autosaveData = item as AutosaveData;
+
+      return res.status(200).json({
+        data: autosaveData.data,
+        timestamp: autosaveData.timestamp,
+        userName: autosaveData.userName
+      });
     }
 
     else {
