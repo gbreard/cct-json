@@ -248,9 +248,9 @@ export default function EditorTesauroV2({ onBack, userName }: EditorTesauroV2Pro
       .sort((a, b) => a.termino_preferido.localeCompare(b.termino_preferido));
 
     return (
-      <div className="flex min-h-full">
+      <div className="flex">
         {/* Índice alfabético */}
-        <div className="w-20 bg-gray-50 border-r border-gray-200 p-2 sticky top-0 self-start max-h-screen overflow-y-auto">
+        <div className="w-20 bg-gray-50 border-r border-gray-200 p-2 sticky top-0 h-screen overflow-y-auto">
           <div className="text-xs font-semibold text-gray-500 mb-2">Letra</div>
           {letras.map((letra) => {
             const count = conceptos.filter(
@@ -618,7 +618,7 @@ export default function EditorTesauroV2({ onBack, userName }: EditorTesauroV2Pro
 
   // ==================== RENDER PRINCIPAL ====================
   return (
-    <div className="h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col">
       {/* Header */}
       <div className="bg-gray-800 text-white p-4 flex items-center justify-between">
         <div>
@@ -680,7 +680,7 @@ export default function EditorTesauroV2({ onBack, userName }: EditorTesauroV2Pro
       </div>
 
       {/* Contenido principal */}
-      <div className="flex-1 overflow-auto bg-gray-50">
+      <div className="flex-1 overflow-y-auto bg-gray-50">
         {loading && !conceptoActual && (
           <div className="flex items-center justify-center h-full">
             <p className="text-gray-500">Cargando...</p>

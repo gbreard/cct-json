@@ -81,11 +81,65 @@ export default function TesauroGraphView({
   const width = 1200;
   const height = 800;
 
-  // Construir grafo a partir del concepto raíz
+  // Construir grafo a partir del concepto raíz o mostrar vista general
   useEffect(() => {
-    if (!conceptoRaiz || conceptos.length === 0) {
+    if (conceptos.length === 0) {
       setNodes([]);
       setEdges([]);
+      return;
+    }
+
+    // Si no hay concepto raíz, mostrar vista general con los conceptos más conectados
+    if (!conceptoRaiz) {
+      const conceptosConRelaciones = conceptos
+        .map((c) => {
+          const totalRelaciones = Object.values(c.relaciones).reduce(
+            (sum, arr) => sum + arr.length,
+            0
+          );
+          return { concepto: c, totalRelaciones };
+        })
+        .sort((a, b) => b.totalRelaciones - a.totalRelaciones)
+        .slice(0, 15); // Top 15 conceptos más conectados
+
+      const nodosMap = new Map<string, Node>();
+      const aristas: Edge[] = [];
+      const visitados = new Set<string>();
+
+      // Agregar nodos principales en círculo
+      conceptosConRelaciones.forEach(({ concepto }, idx) => {
+        const angle = (idx / conceptosConRelaciones.length) * 2 * Math.PI;
+        const radius = Math.min(width, height) * 0.35;
+        nodosMap.set(concepto.id, {
+          id: concepto.id,
+          label: concepto.termino_preferido,
+          x: width / 2 + Math.cos(angle) * radius,
+          y: height / 2 + Math.sin(angle) * radius,
+          vx: 0,
+          vy: 0,
+          fixed: false,
+        });
+        visitados.add(concepto.id);
+      });
+
+      // Agregar solo las relaciones entre los nodos visibles
+      conceptosConRelaciones.forEach(({ concepto }) => {
+        Object.entries(concepto.relaciones).forEach(([tipo, ids]) => {
+          ids.forEach((relacionId) => {
+            if (visitados.has(relacionId)) {
+              aristas.push({
+                source: concepto.id,
+                target: relacionId,
+                type: tipo,
+                label: RELATION_LABELS[tipo] || tipo,
+              });
+            }
+          });
+        });
+      });
+
+      setNodes(Array.from(nodosMap.values()));
+      setEdges(aristas);
       return;
     }
 
@@ -376,8 +430,13 @@ export default function TesauroGraphView({
         </g>
       </svg>
 
-      {/* Leyenda */}
-      <div className="absolute bottom-4 left-4 bg-white border border-gray-300 rounded-lg p-4 shadow-lg">
+      {/* Leyenda e Instrucciones */}
+      <div className="absolute bottom-4 left-4 bg-white border border-gray-300 rounded-lg p-4 shadow-lg max-w-xs">
+        {!conceptoRaiz && (
+          <div className="mb-3 p-2 bg-blue-50 rounded text-xs text-blue-800">
+            📊 Vista general de los 15 conceptos más conectados
+          </div>
+        )}
         <div className="text-sm font-bold mb-2">Tipos de Relaciones:</div>
         <div className="space-y-1">
           {Object.entries(RELATION_LABELS).map(([type, label]) => (
@@ -390,8 +449,9 @@ export default function TesauroGraphView({
             </div>
           ))}
         </div>
-        <div className="mt-3 text-xs text-gray-600">
-          💡 Arrastra los nodos para reorganizar
+        <div className="mt-3 pt-3 border-t border-gray-200 space-y-1 text-xs text-gray-600">
+          <div>💡 Arrastra los nodos para reorganizar</div>
+          <div>🖱️ Click en un nodo para explorar en detalle</div>
         </div>
       </div>
     </div>
