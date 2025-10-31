@@ -31,7 +31,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     console.log('[DEBUG] Starting KV scan...');
 
     // Método 1: SCAN con match lock:*
-    let cursor = 0;
+    let cursor: string | number = 0;
     const lockKeys: string[] = [];
     do {
       const scanResult = await kv.scan(cursor, { match: 'lock:*', count: 100 });
@@ -39,7 +39,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const keys = scanResult[1];
       lockKeys.push(...keys);
       console.log(`[DEBUG] SCAN lock:* cursor=${cursor} found=${keys.length}`);
-    } while (cursor !== 0);
+    } while (cursor !== 0 && cursor !== '0');
 
     console.log(`[DEBUG] Total lock keys found: ${lockKeys.length}`, lockKeys);
 
@@ -52,7 +52,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const keys = scanResult[1];
       autosaveKeys.push(...keys);
       console.log(`[DEBUG] SCAN autosave:* cursor=${cursor} found=${keys.length}`);
-    } while (cursor !== 0);
+    } while (cursor !== 0 && cursor !== '0');
 
     console.log(`[DEBUG] Total autosave keys found: ${autosaveKeys.length}`);
 
@@ -65,7 +65,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const keys = scanResult[1];
       allKeys.push(...keys);
       console.log(`[DEBUG] SCAN * cursor=${cursor} found=${keys.length}`);
-    } while (cursor !== 0);
+    } while (cursor !== 0 && cursor !== '0');
 
     console.log(`[DEBUG] Total keys in DB: ${allKeys.length}`, allKeys);
 

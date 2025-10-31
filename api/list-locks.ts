@@ -24,7 +24,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     // Usar scan en lugar de keys para mayor confiabilidad
-    let cursor = 0;
+    let cursor: string | number = 0;
     const allKeys: string[] = [];
 
     // Iterar usando SCAN para obtener todas las keys
@@ -33,7 +33,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       cursor = result[0];
       const keys = result[1];
       allKeys.push(...keys);
-    } while (cursor !== 0);
+    } while (cursor !== 0 && cursor !== '0');
 
     if (allKeys.length === 0) {
       return res.status(200).json({
