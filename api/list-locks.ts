@@ -23,10 +23,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    // Obtener todas las keys que empiezan con "lock:"
-    const keys = await kv.keys('lock:*');
+    // Usar scan en lugar de keys para mayor confiabilidad
+    let cursor = 0;
+    const allKeys: string[] = [];
 
-    if (keys.length === 0) {
+    // Iterar usando SCAN para obtener todas las keys
+    do {
+      const result = await kv.scan(cursor, { match: 'lock:*', count: 100 });
+      cursor = result[0];
+      const keys = result[1];
+      allKeys.push(...keys);
+    } while (cursor !== 0);
+
+    if (allKeys.length === 0) {
       return res.status(200).json({
         count: 0,
         locks: [],
@@ -35,7 +44,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // Obtener los datos de cada lock
-    const lockPromises = keys.map(async (key) => {
+    const lockPromises = allKeys.map(async (key) => {
       const lockData = await kv.get<LockData>(key);
       return {
         key,

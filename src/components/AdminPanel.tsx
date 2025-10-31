@@ -120,23 +120,42 @@ export default function AdminPanel() {
         )}
       </div>
 
-      <button
-        onClick={handleClearLocks}
-        disabled={clearing || locks.length === 0}
-        style={{
-          width: "100%",
-          padding: "10px",
-          background: clearing || locks.length === 0 ? "#ccc" : "#f44336",
-          color: "white",
-          border: "none",
-          borderRadius: "4px",
-          cursor: clearing || locks.length === 0 ? "not-allowed" : "pointer",
-          fontWeight: "bold",
-          fontSize: "13px"
-        }}
-      >
-        {clearing ? "Limpiando..." : locks.length === 0 ? "✅ Sin Locks Activos" : `🔓 Limpiar ${locks.length} Lock(s)`}
-      </button>
+      <div style={{ display: "flex", gap: "8px" }}>
+        <button
+          onClick={fetchLocks}
+          disabled={loading}
+          style={{
+            flex: 1,
+            padding: "8px",
+            background: "#2196f3",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+            fontWeight: "bold",
+            fontSize: "12px"
+          }}
+        >
+          🔄 Refrescar
+        </button>
+        <button
+          onClick={handleClearLocks}
+          disabled={clearing || locks.length === 0}
+          style={{
+            flex: 2,
+            padding: "10px",
+            background: clearing || locks.length === 0 ? "#ccc" : "#f44336",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: clearing || locks.length === 0 ? "not-allowed" : "pointer",
+            fontWeight: "bold",
+            fontSize: "13px"
+          }}
+        >
+          {clearing ? "Limpiando..." : locks.length === 0 ? "✅ Sin Locks" : `🔓 Limpiar ${locks.length}`}
+        </button>
+      </div>
 
       {result && (
         <div style={{

@@ -23,10 +23,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    // Obtener todas las keys que empiezan con "lock:"
-    const keys = await kv.keys('lock:*');
+    // Usar scan en lugar de keys para mayor confiabilidad
+    let cursor = 0;
+    const allKeys: string[] = [];
 
-    if (keys.length === 0) {
+    // Iterar usando SCAN para obtener todas las keys
+    do {
+      const result = await kv.scan(cursor, { match: 'lock:*', count: 100 });
+      cursor = result[0];
+      const keys = result[1];
+      allKeys.push(...keys);
+    } while (cursor !== 0);
+
+    console.log(`[ADMIN] Found ${allKeys.length} locks to clear:`, allKeys);
+
+    if (allKeys.length === 0) {
       return res.status(200).json({
         ok: true,
         message: 'No hay locks para limpiar',
@@ -34,18 +45,30 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       });
     }
 
-    // Eliminar todos los locks
-    const deletePromises = keys.map(key => kv.del(key));
-    await Promise.all(deletePromises);
+    // Eliminar todos los locks uno por uno con logging
+    let deletedCount = 0;
+    for (const key of allKeys) {
+      try {
+        const deleted = await kv.del(key);
+        if (deleted) {
+          deletedCount++;
+          console.log(`[ADMIN] Deleted lock: ${key}`);
+        }
+      } catch (err) {
+        console.error(`[ADMIN] Error deleting ${key}:`, err);
+      }
+    }
+
+    console.log(`[ADMIN] Successfully deleted ${deletedCount}/${allKeys.length} locks`);
 
     return res.status(200).json({
       ok: true,
-      message: `${keys.length} lock(s) eliminado(s) exitosamente`,
-      locksRemoved: keys.length,
-      removedKeys: keys
+      message: `${deletedCount} lock(s) eliminado(s) exitosamente`,
+      locksRemoved: deletedCount,
+      removedKeys: allKeys
     });
   } catch (error) {
-    console.error('Error clearing locks:', error);
+    console.error('[ADMIN] Error clearing locks:', error);
     return res.status(500).json({
       error: 'Internal server error',
       message: error instanceof Error ? error.message : 'Unknown error'
