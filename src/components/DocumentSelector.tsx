@@ -39,18 +39,6 @@ export default function DocumentSelector({ onSelectDocument, categoryId, categor
         fecha_parseo: "2025-10-16"
       },
       {
-        fileName: "CCT-130-75-Principal_01_7527588E_HIBRIDO.json",
-        filePath: "/jsons_parseados/CCT-130-75-Principal_01_7527588E_HIBRIDO.json",
-        tipo_documento: "CCT_PRINCIPAL",
-        fecha_parseo: "2025-10-16"
-      },
-      {
-        fileName: "CCT-130-75-Principal-2_HIBRIDO.json",
-        filePath: "/jsons_parseados/CCT-130-75-Principal-2_HIBRIDO.json",
-        tipo_documento: "CCT_PRINCIPAL",
-        fecha_parseo: "2025-10-16"
-      },
-      {
         fileName: "CON-ACU-1130-2011-A_HIBRIDO.json",
         filePath: "/jsons_parseados/CON-ACU-1130-2011-A_HIBRIDO.json",
         tipo_documento: "ACUERDO",
@@ -78,12 +66,6 @@ export default function DocumentSelector({ onSelectDocument, categoryId, categor
         fileName: "CON-ACU-130-2024-E_1_HIBRIDO.json",
         filePath: "/jsons_parseados/CON-ACU-130-2024-E_1_HIBRIDO.json",
         tipo_documento: "ACUERDO",
-        fecha_parseo: "2025-10-22"
-      },
-      {
-        fileName: "CON-CCT-130-1975-A_HIBRIDO.json",
-        filePath: "/jsons_parseados/CON-CCT-130-1975-A_HIBRIDO.json",
-        tipo_documento: "CCT",
         fecha_parseo: "2025-10-22"
       },
       {
